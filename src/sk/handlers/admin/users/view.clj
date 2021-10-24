@@ -2,7 +2,7 @@
   (:require [hiccup.page :refer [include-js]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [sk.models.crud :refer [config]]
-            [sk.models.util :refer [build-dialog build-field build-image-field build-image-field-script build-radio-buttons build-table]]))
+            [sk.models.util :refer [build-dialog build-dialog-buttons build-field build-image-field build-image-field-script build-radio-buttons build-table]]))
 
 (def dialog-fields
   (list
@@ -105,11 +105,11 @@
 
 (defn users-scripts []
   (list
-  (include-js "/js/grid.js")
-  [:script
-   (build-image-field-script)
-  (str
-  "
+   (include-js "/js/grid.js")
+   [:script
+    (build-image-field-script)
+    (str
+     "
   function resizeImage(imgObject) {
     var img = $('#'+imgObject.id);
     if(img.width() < 500) {
@@ -150,5 +150,4 @@
       return 'No';
     }
   }
-  ")]
-  ))
+  ")]))

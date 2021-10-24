@@ -3,7 +3,7 @@
 
 (defn login-view [token]
   (build-form
-    "Conectar"
+   "Conectar"
    token
    (list
     (build-field
@@ -25,11 +25,12 @@
       :text "Acceder al sitio"
       :class "easyui-linkbutton c6"
       :onClick "submitForm()"}))
-   (list
-    [:div {:style "margin-bottom:10px;"}
-     [:a {:href "/register"} "Clic para registrarse"]]
-    [:div {:style "margin-bottom:10px;"}
-     [:a {:href "/rpaswd"} "Clic para resetear su contraseña"]])))
+   (comment
+     (list
+      [:div {:style "margin-bottom:10px;"}
+       [:a {:href "/register"} "Clic para registrarse"]]
+      [:div {:style "margin-bottom:10px;"}
+       [:a {:href "/rpaswd"} "Clic para resetear su contraseña"]]))))
 
 (defn login-script []
   [:script

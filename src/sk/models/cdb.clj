@@ -55,17 +55,83 @@
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ")
 ;; End eventos
 
+;; Start carrera table
+(def carrera-sql
+  "CREATE TABLE carrera (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  descripcion varchar(200) DEFAULT NULL,
+  activa char(1) DEFAULT NULL COMMENT 'S=si,N=No',
+  p1 TEXT DEFAULT NULL,
+  p2 TEXT DEFAULT NULL,
+  p3 TEXT DEFAULT NULL,
+  p4 TEXT DEFAULT NULL,
+  d1 TEXT DEFAULT NULL,
+  d2 TEXT DEFAULT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8")
+;; End carrera table
+
+;; Start categorias table
+(def categorias-sql
+  "CREATE TABLE categorias (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  descripcion varchar(200) DEFAULT NULL,
+  activa char(1) DEFAULT NULL COMMENT 'S=si,N=No'
+  ) ENGINE InnoDB DEFAULT CHARSET=utf8")
+;; End categorias table
+
+;; Start carreras table
+(def carreras-sql
+  "CREATE TABLE carreras (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  nombre varchar(100) DEFAULT NULL,
+  apell_paterno varchar(100) DEFAULT NULL,
+  apell_materno varchar(100) DEFAULT NULL,
+  pais varchar(100) DEFAULT NULL,
+  ciudad varchar(100) DEFAULT NULL,
+  telefono varchar(100) DEFAULT NULL,
+  email varchar(100) DEFAULT NULL,
+  sexo varchar(100) DEFAULT NULL,
+  fecha_nacimiento date DEFAULT NULL,
+  direccion varchar(200) DEFAULT NULL,
+  club varchar(100) DEFAULT NULL,
+  carrera_id int NOT NULL,
+  categoria_id int NOT NULL,
+  numero_asignado varchar(100) DEFAULT NULL,
+  last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_carreras_carrera_id FOREIGN KEY (carrera_id) REFERENCES carrera (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_carreras_categoria_id FOREIGN KEY (categoria_id) REFERENCES categorias (id) ON UPDATE CASCADE ON DELETE CASCADE
+  ) ENGINE=InnoDB CHARSET=utf8")
+;; End carreras table
+
+;; Start mensajes table
+(def mensajes-sql
+  "CREATE TABLE mensajes (
+  id int NOT NULL primary key AUTO_INCREMENT comment 'primary key',
+  registrar_mensaje text DEFAULT NULL,
+  correo_mensaje text DEFAULT NULL,
+  carrera_id int NOT NULL,
+  CONSTRAINT fk_mensajes_carrera_id FOREIGN KEY (carrera_id) REFERENCES carrera (id) ON UPDATE CASCADE ON DELETE CASCADE
+  ) ENGINE=InnoDB CHARSET=utf8")
+;; End mensajes table
 (defn drop-tables
   "Drops tables if they exist"
   []
   (Query! db "DROP table IF EXISTS users")
-  (Query! db "DROP table IF EXISTS eventos"))
+  (Query! db "DROP table IF EXISTS eventos")
+  (Query! db "DROP carrera IF EXISTS carrera")
+  (Query! db "DROP categorias IF EXISTS categorias")
+  (Query! db "DROP carreras IF EXISTS carreras")
+  (Query! db "DROP mensajes IF EXISTS mensajes"))
 
 (defn create-tables
   "Creates tables"
   []
   (Query! db users-sql)
-  (Query! db eventos-sql))
+  (Query! db eventos-sql)
+  (Query! db carrera-sql)
+  (Query! db categorias-sql)
+  (Query! db carreras-sql)
+  (Query! db mensajes-sql))
 
 (defn populate-tables
   "Populates table with default data"

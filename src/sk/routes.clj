@@ -3,7 +3,8 @@
             [compojure.core :refer [GET POST defroutes]]
             [sk.handlers.home.handler :as home]
             [sk.handlers.registrar.handler :as registrar]
-            [sk.handlers.tref.handler :as table_ref]))
+            [sk.handlers.tref.handler :as table_ref]
+            [sk.handlers.eventos.handler :as eventos]))
 
 (defroutes open-routes
   ;; Start table_ref
@@ -31,4 +32,9 @@
   (GET "/reset_password/:token" [token] (registrar/reset-jwt token))
   (POST "/reset_password" request [] (registrar/reset-jwt! request))
   ;; End registrar
+
+  ;; Start eventos
+  (GET "/eventos/list" request [] (eventos/eventos request))
+  (GET "/eventos/list/:year/:month" [year month] (eventos/display-eventos year month))
+  ;; End eventos
   )
