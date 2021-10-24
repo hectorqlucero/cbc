@@ -1,7 +1,9 @@
 (ns sk.proutes
   (:require [compojure.core :refer [GET POST defroutes]]
             [sk.handlers.admin.users.handler :as users]
-            [sk.handlers.admin.eventos.handler :as eventos]))
+            [sk.handlers.admin.eventos.handler :as eventos]
+            [sk.handlers.admin.categorias.handler :as categorias]
+            [sk.handlers.admin.carrera.handler :as carrera]))
 
 (defroutes proutes
   ;; Start users
@@ -19,4 +21,20 @@
   (POST "/admin/eventos/save" req [] (eventos/eventos-save req))
   (POST "/admin/eventos/delete" req [] (eventos/eventos-delete req))
   ;; End eventos
+
+  ;; Start categorias
+  (GET "/admin/categorias"  req [] (categorias/categorias req))
+  (POST "/admin/categorias" req [] (categorias/categorias-grid req))
+  (GET "/admin/categorias/edit/:id" [id] (categorias/categorias-form id))
+  (POST "/admin/categorias/save" req [] (categorias/categorias-save req))
+  (POST "/admin/categorias/delete" req [] (categorias/categorias-delete req))
+  ;; End categorias
+
+  ;; Start carrera
+  (GET "/admin/carrera"  req [] (carrera/carrera req))
+  (POST "/admin/carrera" req [] (carrera/carrera-grid req))
+  (GET "/admin/carrera/edit/:id" [id] (carrera/carrera-form id))
+  (POST "/admin/carrera/save" req [] (carrera/carrera-save req))
+  (POST "/admin/carrera/delete" req [] (carrera/carrera-delete req))
+  ;; End carrera
   )

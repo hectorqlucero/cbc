@@ -7,7 +7,8 @@
 (defn build-admin []
   (list
    [:a.dropdown-item {:href "/admin/users"} "Usuarios"]
-   [:a.dropdown-item {:href "/admin/eventos"} "Eventos"]))
+   [:a.dropdown-item {:href "/admin/eventos"} "Eventos"]
+   [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]))
 
 (defn menus-private []
   (list
@@ -41,6 +42,16 @@
       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
       [:li.nav-item [:a.nav-link {:href "/home/login"} "Conectar"]]]]]))
 
+(defn menus-none []
+  (list
+   [:nav.navbar.navbar-expand-sm.navbar-dark.bg-primary.fixed-top
+    [:a.navbar-brand {:href "#"} (:site-name config)]
+    [:button.navbar-toggler {:type "button"
+                             :data-toggle "collapse"
+                             :data-target "#collapsibleNavbar"}
+     [:span.navbar-toggler-icon]]
+    [:div#collapsibleNavbar.collapse.navbar-collapse]]))
+
 (defn app-css []
   (list
    (include-css "/bootstrap/css/bootstrap.min.css")
@@ -69,28 +80,28 @@
    (include-js "/js/main.js")))
 
 (defn application [title ok js & content]
-  (html5 {:ng-app (:sitename config) :lang "en"}
+  (html5 {:ng-app (:site-name config) :lang "en"}
          [:head
-          [:title (if title title (:site-name config))]
+          [:title (if title
+                    title
+                    (:site-name config))]
           [:meta {:charset "UTF-8"}]
           [:meta {:name "viewport"
                   :content "width=device-width, initial-scale=1"}]
           (app-css)
           [:link {:rel "shortcut icon"
                   :type "image/x-icon"
-                  :href "data:image/x-icon;"}]]
-         [:body.easyui-layout
-          [:div {:data-options "region:'north'" :style "width:100%;height:6%;text-align:center;margin-bottom:10px;"}
-           (cond
-             (= ok -1) nil
-             (= ok 0) (menus-public)
-             (> ok 0) (menus-private))]
-          [:div {:data-options "region:'center'" :style "width:100%;height:auto"}
+                  :href "data:image/x-icon;,"}]]
+         [:body
+          (cond
+            (= ok -1) (menus-none)
+            (= ok 0) (menus-public)
+            (> ok 0) (menus-private))
+          [:div#content.container-fluid.easyui-panel {:style "margin-top:75px;border:none;"
+                                                      :data-options "closed:false"}
            content]
-          [:div {:data-options "region:'south'" :style "width:100%;height:5%;text-align:center;"}
-           (app-js)
-           js
-           [:span "Copyright @" (t/year (t/now))]]]))
+          (app-js)
+          js]))
 
 (defn error-404 [error return-url]
   [:div

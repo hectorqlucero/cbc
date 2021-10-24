@@ -90,9 +90,7 @@
 ;; End jwt token
 
 (defn get-session-id []
-  (try
-    (if (session/get :user_id) (session/get :user_id) 0)
-    (catch Exception e (.getMessage e))))
+  (if (session/get :user_id) (session/get :user_id) 0))
 
 (defn current_date
   "Get current date formatted MM/dd/YYYY"
