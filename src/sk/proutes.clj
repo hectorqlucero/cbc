@@ -4,7 +4,8 @@
             [sk.handlers.admin.users.handler :as users]
             [sk.handlers.admin.eventos.handler :as eventos]
             [sk.handlers.admin.categorias.handler :as categorias]
-            [sk.handlers.admin.carrera.handler :as carrera]))
+            [sk.handlers.admin.carrera.handler :as carrera]
+            [sk.handlers.admin.mensajes.handler :as mensajes]))
 
 (defroutes proutes
   ;; Start users
@@ -30,6 +31,14 @@
   (POST "/admin/categorias/save" req [] (categorias/categorias-save req))
   (POST "/admin/categorias/delete" req [] (categorias/categorias-delete req))
   ;; End categorias
+
+  ;; Start mensajes
+  (GET "/admin/mensajes"  req [] (mensajes/mensajes req))
+  (POST "/admin/mensajes" req [] (mensajes/mensajes-grid req))
+  (GET "/admin/mensajes/edit/:id/:no" [id no] (mensajes/mensajes-form id no))
+  (POST "/admin/mensajes/save" req [] (mensajes/mensajes-save req))
+  (POST "/admin/mensajes/delete" req [] (mensajes/mensajes-delete req))
+  ;; End mensajes
 
   ;; Start carrera
   (GET "/admin/carrera/carreras" [] (generate-string (carrera/carreras)))
