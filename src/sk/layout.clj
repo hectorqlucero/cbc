@@ -14,7 +14,7 @@
 
 (defn menus-private []
   (list
-   [:nav.navbar.navbar-expand-sm.navbar-dark.bg-primary.fixed-top
+   [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
     [:a.navbar-brand {:href "/"} (:site-name config)]
     [:button.navbar-toggler {:type "button"
                              :data-toggle "collapse"
@@ -33,7 +33,7 @@
 
 (defn menus-public []
   (list
-   [:nav.navbar.navbar-expand-sm.navbar-dark.bg-primary.fixed-top
+   [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
     [:a.navbar-brand {:href "/"} (:site-name config)]
     [:button.navbar-toggler {:type "button"
                              :data-toggle "collapse"
@@ -46,7 +46,7 @@
 
 (defn menus-none []
   (list
-   [:nav.navbar.navbar-expand-sm.navbar-dark.bg-primary.fixed-top
+   [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
     [:a.navbar-brand {:href "#"} (:site-name config)]
     [:button.navbar-toggler {:type "button"
                              :data-toggle "collapse"
@@ -59,7 +59,7 @@
    (include-css "/bootstrap/css/bootstrap.min.css")
    (include-css "/bootstrap/css/lumen.min.css")
    (include-css "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")
-   (include-css "/easyui/themes/material/easyui.css")
+   (include-css "/easyui/themes/metro-gray/easyui.css")
    (include-css "/easyui/themes/icon.css")
    (include-css "/easyui/themes/color.css")
    (include-css "/css/main.css")
@@ -82,28 +82,28 @@
    (include-js "/js/main.js")))
 
 (defn application [title ok js & content]
-  (html5 {:ng-app (:site-name config) :lang "en"}
+  (html5 {:ng-app (:site-name config) :lang "es"}
          [:head
-          [:title (if title
-                    title
-                    (:site-name config))]
+          [:title (if title title (:site-name config))]
           [:meta {:charset "UTF-8"}]
           [:meta {:name "viewport"
                   :content "width=device-width, initial-scale=1"}]
-          (app-css)
-          [:link {:rel "shortcut icon"
-                  :type "image/x-icon"
-                  :href "data:image/x-icon;,"}]]
-         [:body
+          (app-css)]
+         [:body.easyui-layout
+          [:div#p {:data-options "region:'north'"
+                   :style "height:60px;"}]
           (cond
             (= ok -1) (menus-none)
             (= ok 0) (menus-public)
             (> ok 0) (menus-private))
-          [:div#content.container-fluid.easyui-panel {:style "margin-top:75px;border:none;"
-                                                      :data-options "closed:false"}
+          [:div#q {:data-options "region:'center'"
+                   :style "padding:5px;background:#eee;"}
            content]
           (app-js)
-          js]))
+          js
+          [:div#r {:data-options "region:'south'"
+                   :style "height:25px;text-align:center;"}
+           [:span "Copyright@" (t/year (t/now))]]]))
 
 (defn error-404 [error return-url]
   [:div
