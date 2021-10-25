@@ -1,5 +1,6 @@
 (ns sk.proutes
   (:require [compojure.core :refer [GET POST defroutes]]
+            [cheshire.core :refer (generate-string)]
             [sk.handlers.admin.users.handler :as users]
             [sk.handlers.admin.eventos.handler :as eventos]
             [sk.handlers.admin.categorias.handler :as categorias]
@@ -31,6 +32,9 @@
   ;; End categorias
 
   ;; Start carrera
+  (GET "/admin/carrera/carreras" [] (generate-string (carrera/carreras)))
+  (POST "/admin/carrera/categorias/:id" [id] (carrera/categorias id))
+  (POST "/admin/carrera/categoria/save" req [] (carrera/categorias-save req))
   (GET "/admin/carrera"  req [] (carrera/carrera req))
   (POST "/admin/carrera" req [] (carrera/carrera-grid req))
   (GET "/admin/carrera/edit/:id" [id] (carrera/carrera-form id))

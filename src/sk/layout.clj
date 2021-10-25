@@ -8,7 +8,8 @@
   (list
    [:a.dropdown-item {:href "/admin/users"} "Usuarios"]
    [:a.dropdown-item {:href "/admin/eventos"} "Eventos"]
-   [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]))
+   [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]
+   [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]))
 
 (defn menus-private []
   (list

@@ -8,20 +8,51 @@ $(document).ready(function() {
   dg.datagrid({
     view: detailview,
     detailFormatter:function(index,row) {
-      return '<div style="padding:2px"><table class="ddv"></table></div>';
+      return '<div style="padding:2px"><table class="ddv"></table></div><div style="padding:2px"><table class="ddv1"></table>';
     },
     onExpandRow: function(index,row) {
       var ddv = $(this).datagrid('getRowDetail',index).find('table.ddv');
       ddv.datagrid({
-        url:'/admin/carrera/categorias/' + row.id,
+        queryParams: {
+          '__anti-forgery-token':token,
+          'carrera_id':row.id
+        },
+        url:'/admin/categorias',
+        idField: "id",
         fitColumns:true,
         singleSelect:true,
         rownumbers:true,
         loadMsg:'',
         height:'auto',
         columns:[[
-          {field:'id',title:'ID',width:100},
-          {field:'descripcion',title:'Descripción',width:100}
+          {field:'descripcion',title:'Categorias',editor:'text',width:100}
+        ]],
+        onResize:function() {
+          dg.datagrid('fixDetailRowHeight',index);
+        },
+        onLoadSuccess:function() {
+          setTimeout (function() {
+            dg.datagrid('fixDetailRowHeight',index);
+          },0);
+        }
+      });
+      dg.datagrid('fixDetailRowHeight',index);
+
+      var ddv1 = $(this).datagrid('getRowDetail',index).find('table.ddv1');
+      ddv1.datagrid({
+        queryParams: {
+          '__anti-forgery-token':token,
+          'carrera_id':row.id
+        },
+        url:'/admin/categorias',
+        idField: "id",
+        fitColumns:true,
+        singleSelect:true,
+        rownumbers:true,
+        loadMsg:'',
+        height:'auto',
+        columns:[[
+          {field:'descripcion',title:'Categorias',editor:'text',width:100}
         ]],
         onResize:function() {
           dg.datagrid('fixDetailRowHeight',index);
@@ -43,6 +74,16 @@ function returnItem(url) {
 
 function newItem() {
   dg.datagrid('unselectAll');
+  $('#image1').attr('src','/images/placeholder_profile.png');
+  dlg.dialog("open").dialog("center").dialog('setTitle', 'Nuevo Record');
+  windowHeight = $(window).height() - ($(window).height() * 0.2);
+  dlg.dialog('resize', {height: windowHeight}).dialog('center');
+  fm.form("clear");
+  url = window.location.href;
+}
+
+function ddvNewItem() {
+  ddv.datagrid('unselectAll');
   $('#image1').attr('src','/images/placeholder_profile.png');
   dlg.dialog("open").dialog("center").dialog('setTitle', 'Nuevo Record');
   windowHeight = $(window).height() - ($(window).height() * 0.2);

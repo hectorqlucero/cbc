@@ -22,7 +22,11 @@
   [{params :params}]
   (try
     (let [table "categorias"
-          args {:sort-extra "id"}]
+          carrera_id (:carrera_id params)
+          args (if (nil? carrera_id)
+                 {:sort-extra "id"}
+                 {:sort-extra "id"
+                  :search-extra (str "carrera_id = " carrera_id)})]
       (build-grid params table args))
     (catch Exception e (.getMessage e))))
 

@@ -108,4 +108,16 @@
    (build-dialog title dialog-fields)))
 
 (defn carrera-scripts []
-  (include-js "/js/carreras_grid.js"))
+  (list
+   (include-js "/js/carreras_grid.js")
+   [:script
+    "
+     function catProcess(value, row, index) {
+      var url = '/admin/categorias';
+      var result = '<a href='+url+' target=\"_blank\">Categorias</a>';
+      return result;
+     }
+     "]))
+
+(comment
+  (build-toolbar))
