@@ -20,7 +20,6 @@
 
 (defn mensajes-grid
   [{params :params}]
-  (println "params: " params)
   (try
     (let [table "mensajes"
           carrera_id (:carrera_id params)
