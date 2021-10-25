@@ -44,7 +44,7 @@ $(document).ready(function() {
           '__anti-forgery-token':token,
           'carrera_id':row.id
         },
-        url:'/admin/categorias',
+        url:'/admin/mensajes',
         idField: "id",
         fitColumns:true,
         singleSelect:true,
@@ -52,7 +52,8 @@ $(document).ready(function() {
         loadMsg:'',
         height:'auto',
         columns:[[
-          {field:'descripcion',title:'Categorias',editor:'text',width:100}
+          {field:'registrar_mensaje',title:'Mensaje-Registro',editor:'text',width:100},
+          {field:'correo_mensaje',title:'Mensaje-Correo',editor:'text',width:100}
         ]],
         onResize:function() {
           dg.datagrid('fixDetailRowHeight',index);
@@ -74,16 +75,6 @@ function returnItem(url) {
 
 function newItem() {
   dg.datagrid('unselectAll');
-  $('#image1').attr('src','/images/placeholder_profile.png');
-  dlg.dialog("open").dialog("center").dialog('setTitle', 'Nuevo Record');
-  windowHeight = $(window).height() - ($(window).height() * 0.2);
-  dlg.dialog('resize', {height: windowHeight}).dialog('center');
-  fm.form("clear");
-  url = window.location.href;
-}
-
-function ddvNewItem() {
-  ddv.datagrid('unselectAll');
   $('#image1').attr('src','/images/placeholder_profile.png');
   dlg.dialog("open").dialog("center").dialog('setTitle', 'Nuevo Record');
   windowHeight = $(window).height() - ($(window).height() * 0.2);

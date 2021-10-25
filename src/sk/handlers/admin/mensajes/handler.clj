@@ -3,23 +3,32 @@
             [sk.layout :refer [application]]
             [sk.models.crud :refer [build-form-delete build-form-row build-form-save]]
             [sk.models.grid :refer [build-grid]]
-            [sk.models.util :refer [get-session-id]]))
+            [sk.models.util :refer [get-session-id user-level]]))
 
 (defn mensajes
   [_]
-  (try
-    (let [title "Mensajes"
-          ok (get-session-id)
-          js (mensajes-scripts)
-          content (mensajes-view title)]
-      (application title ok js content))
-    (catch Exception e (.getMessage e))))
+  (let [title "Categorias"
+        ok (get-session-id)
+        js (mensajes-scripts)
+        content (mensajes-view title)]
+    (if
+     (or
+      (= (user-level) "A")
+      (= (user-level) "S"))
+      (application title ok js content)
+      (application title ok nil "Solo <strong>administradores></strong> pueden accesar esta opción!!!"))))
 
 (defn mensajes-grid
   [{params :params}]
+  (println "params: " params)
   (try
-    (let [table "mensajes"]
-      (build-grid params table))
+    (let [table "mensajes"
+          carrera_id (:carrera_id params)
+          args (if (nil? carrera_id)
+                 {:sort-extra "id"}
+                 {:sort-extra "id"
+                  :search-extra (str "carrera_id = " carrera_id)})]
+      (build-grid params table args))
     (catch Exception e (.getMessage e))))
 
 (defn mensajes-form

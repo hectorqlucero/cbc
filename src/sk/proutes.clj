@@ -35,7 +35,7 @@
   ;; Start mensajes
   (GET "/admin/mensajes"  req [] (mensajes/mensajes req))
   (POST "/admin/mensajes" req [] (mensajes/mensajes-grid req))
-  (GET "/admin/mensajes/edit/:id/:no" [id no] (mensajes/mensajes-form id no))
+  (GET "/admin/mensajes/edit/:id" [id] (mensajes/mensajes-form id))
   (POST "/admin/mensajes/save" req [] (mensajes/mensajes-save req))
   (POST "/admin/mensajes/delete" req [] (mensajes/mensajes-delete req))
   ;; End mensajes
