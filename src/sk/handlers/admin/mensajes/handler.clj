@@ -7,7 +7,7 @@
 
 (defn mensajes
   [_]
-  (let [title "Categorias"
+  (let [title "Mensajes - Correo"
         ok (get-session-id)
         js (mensajes-scripts)
         content (mensajes-view title)]
