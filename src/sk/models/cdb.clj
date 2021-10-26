@@ -70,34 +70,6 @@
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8")
 ;; End carrera table
 
-;; Start s_categorias table
-(def s_categorias-sql
-  "CREATE TABLE s_categorias (
-  id int NOT NULL PRIMARY KEY,
-  descripcion varchar(200) DEFAULT NULL
-  ) ENGINE InnoDB DEFAULT CHARSET=utf8")
-
-(def s_categorias-rows
-  [{:id 1
-    :descripcion "Primera Fuerza Varonil"}
-   {:id 2
-    :descripcion "Segunda Fuerza Varonil"}
-   {:id 3
-    :descripcion "Tercera Fuerza (Novatos) Varonil"}
-   {:id 4
-    :descripcion "Veteranos Varonil 40 y Mas"}
-   {:id 5
-    :descripcion "Primera Fuerza Femenil"}
-   {:id 6
-    :descripcion "Segunda Fuerza Femenil"}
-   {:id 7
-    :descripcion "Tercera Fuerza (Novatos) Femenil"}
-   {:id 8
-    :descripcion "Varonil"}
-   {:id 9
-    :descripcion "Femenil"}])
-;; End s_categorias table
-
 ;; Start categorias table
 (def categorias-sql
   "CREATE TABLE categorias (
@@ -124,25 +96,12 @@
   direccion varchar(200) DEFAULT NULL,
   club varchar(100) DEFAULT NULL,
   carrera_id int NOT NULL,
+  categoria_id int NOT NULL,
   numero_asignado varchar(100) DEFAULT NULL,
   last_updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_carreras_carrera_id FOREIGN KEY (carrera_id) REFERENCES carrera (id) ON UPDATE CASCADE ON DELETE CASCADE
   ) ENGINE=InnoDB CHARSET=utf8")
 ;; End carreras table
-
-;; Start s_mensages table
-(def s_mensajes-sql
-  "CREATE TABLE s_mensajes (
-  id int NOT NULL primary key,
-  registrar_mensaje text DEFAULT NULL,
-  correo_mensaje text DEFAULT NULL
-  ) ENGINE=InnoDB CHARSET=utf8")
-
-(def s_mensajes-rows
-  [{:id 1
-    :registrar_mensaje "Tu registro Se ha Realizado con éxito, revisa tu correo donde encontraras tu ficha de registro."
-    :correo_mensaje "Cambiar este mensaje"}])
-;; End s_mensajes table
 
 ;; Start mensajes table
 (def mensajes-sql
@@ -161,8 +120,6 @@
   (Query! db "DROP table IF EXISTS users")
   (Query! db "DROP table IF EXISTS eventos")
   (Query! db "DROP table IF EXISTS carreras")
-  (Query! db "DROP table IF EXISTS s_categorias")
-  (Query! db "DROP table IF EXISTS s_mensajes")
   (Query! db "DROP table IF EXISTS categorias")
   (Query! db "DROP table IF EXISTS mensajes")
   (Query! db "DROP table IF EXISTS carrera"))
@@ -173,8 +130,6 @@
   (Query! db users-sql)
   (Query! db eventos-sql)
   (Query! db carrera-sql)
-  (Query! db s_categorias-sql)
-  (Query! db s_mensajes-sql)
   (Query! db categorias-sql)
   (Query! db carreras-sql)
   (Query! db mensajes-sql))
@@ -184,14 +139,6 @@
   []
   (Query! db "LOCK TABLES users WRITE;")
   (Insert-multi db :users users-rows)
-  (Query! db "UNLOCK TABLES;")
-
-  (Query! db "LOCK TABLES s_categorias WRITE;")
-  (Insert-multi db :s_categorias s_categorias-rows)
-  (Query! db "UNLOCK TABLES;")
-
-  (Query! db "LOCK TABLES s_mensajes WRITE;")
-  (Insert-multi db :s_mensajes s_mensajes-rows)
   (Query! db "UNLOCK TABLES;"))
 
 (defn reset-database

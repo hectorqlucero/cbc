@@ -23,6 +23,7 @@
     [:div#collapsibleNavbar.collapse.navbar-collapse
      [:ul.navbar-nav
       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+      [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
       [:li.nav-item.dropdown
        [:a.nav-link.dropdown-toggle {:href "#"
                                      :id "navdrop"
@@ -42,6 +43,7 @@
     [:div#collapsibleNavbar.collapse.navbar-collapse
      [:ul.navbar-nav
       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+      [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
       [:li.nav-item [:a.nav-link {:href "/home/login"} "Conectar"]]]]]))
 
 (defn menus-none []
@@ -103,7 +105,7 @@
           js
           [:div#r {:data-options "region:'south'"
                    :style "height:25px;text-align:center;"}
-           [:span "Copyright@" (t/year (t/now))]]]))
+           [:span "Copyright &copy" (t/year (t/now)) " - All Rights Reserved"]]]))
 
 (defn error-404 [error return-url]
   [:div

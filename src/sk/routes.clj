@@ -3,6 +3,7 @@
             [compojure.core :refer [GET POST defroutes]]
             [sk.handlers.home.handler :as home]
             [sk.handlers.registrar.handler :as registrar]
+            [sk.handlers.registro.handler :as registro]
             [sk.handlers.tref.handler :as table_ref]
             [sk.handlers.eventos.handler :as eventos]))
 
@@ -38,4 +39,8 @@
   (GET "/eventos/list" request [] (eventos/eventos request))
   (GET "/eventos/list/:year/:month" [year month] (eventos/display-eventos year month))
   ;; End eventos
+
+  ;; Start registro
+  (GET "/registro" request [] (registro/registro request))
+  ;; End registro
   )
