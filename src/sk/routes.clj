@@ -44,6 +44,6 @@
   ;; Start registro
   (GET "/registro" request [] (registro/registro request))
   (GET "/registrar/:carrera_id" [carrera_id] (registro/registrar carrera_id))
-  (POST "/registrar/save" request [] (registro/registrar-save request))
+  (POST "/registrar/:carrera_id/save" request [] (registro/registrar-save request))
   ;; End registro
   )
