@@ -2,6 +2,20 @@
   (:require [sk.models.crud :refer [Query db]]
             [sk.models.util :refer [current_year get-image parse-int zpl]]))
 
+;; Start categorias
+(def get-categorias-sql
+  "SELECT
+  id AS value,
+  descripcion AS text
+  FROM categorias
+  WHERE
+  carrera_id = ?
+  ORDER BY id")
+
+(defn get-categorias [carrera_id]
+  (Query db [get-categorias-sql carrera_id]))
+;; End categorias
+
 ;; Start get-users
 (def get-users-sql
   "SELECT
@@ -100,4 +114,5 @@
     ((keyword field) row)))
 
 (comment
+  (get-categorias 1)
   (get-carrera-name 1))
