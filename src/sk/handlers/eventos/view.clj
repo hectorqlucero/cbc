@@ -83,7 +83,7 @@
   [:h2 (:descripcion_corta row)
    [:div.card
     [:div.card-body {:style "font-size:.5em;"}
-     (line-rr nil [:img.card-img-top.mb-3.w-auto {:src (str (:path config) (:imagen row))
+     (line-rr nil [:img.card-img-top.mb-3.w-auto {:src (str (:img-url config) (:imagen row))
                                                   :style "max-width:100%;height:auto;"
                                                   :onError "this.src='/images/placeholder_profile.png'"}])
      (line-rr "Fecha:" (:f_fecha row))
@@ -103,3 +103,6 @@
 (defn display-eventos-scripts [_ _]
   (list
    [:script nil]))
+
+(comment
+  (println (:img-url config)))
