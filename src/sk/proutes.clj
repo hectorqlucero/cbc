@@ -5,6 +5,7 @@
             [sk.handlers.admin.eventos.handler :as eventos]
             [sk.handlers.admin.categorias.handler :as categorias]
             [sk.handlers.admin.carrera.handler :as carrera]
+            [sk.handlers.registered.handler :as registered]
             [sk.handlers.admin.mensajes.handler :as mensajes]))
 
 (defroutes proutes
@@ -39,6 +40,13 @@
   (POST "/admin/mensajes/save" req [] (mensajes/mensajes-save req))
   (POST "/admin/mensajes/delete" req [] (mensajes/mensajes-delete req))
   ;; End mensajes
+
+  ;; Start display registered
+  (GET "/display/registered" req [] (registered/registrados req))
+  (GET "/display/registered/:carrera_id" [carrera_id] (registered/registered carrera_id))
+  (GET "/imprimir/registered/:id" [id] (registered/imprimir id))
+  (GET "/update/registered/:id/:no" [id no] (registered/update-db id no))
+  ;; End display registered
 
   ;; Start carrera
   (GET "/admin/carrera/carreras" [] (generate-string (carrera/carreras)))

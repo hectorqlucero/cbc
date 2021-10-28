@@ -12,25 +12,44 @@
    [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]
    [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]))
 
+(defn user-menus []
+  [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+  [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]])
+
+(defn admin-menus []
+  (list
+    [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+   [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
+   [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
+
+(defn system-menus []
+  (list
+    [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+    [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
+    [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
+
 (defn menus-private []
   (list
-   [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
-    [:a.navbar-brand {:href "/"} (:site-name config)]
-    [:button.navbar-toggler {:type "button"
-                             :data-toggle "collapse"
-                             :data-target "#collapsibleNavbar"}
-     [:span.navbar-toggler-icon]]
-    [:div#collapsibleNavbar.collapse.navbar-collapse
-     [:ul.navbar-nav
-      [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
-      [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
-      [:li.nav-item.dropdown
-       [:a.nav-link.dropdown-toggle {:href "#"
-                                     :id "navdrop"
-                                     :data-toggle "dropdown"} "Administrar"]
-       [:div.dropdown-menu
-        (build-admin)]]
-      [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]))
+    [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
+     [:a.navbar-brand {:href "/"} (:site-name config)]
+     [:button.navbar-toggler {:type "button"
+                              :data-toggle "collapse"
+                              :data-target "#collapsibleNavbar"}
+      [:span.navbar-toggler-icon]]
+     [:div#collapsibleNavbar.collapse.navbar-collapse
+      [:ul.navbar-nav
+       (cond
+         (= (user-level) "U") (user-menus)
+         (= (user-level) "A") (admin-menus)
+         (= (user-level) "S") (system-menus))
+       (when (= (user-level) "S")
+         [:li.nav-item.dropdown
+          [:a.nav-link.dropdown-toggle {:href "#"
+                                        :id "navdrop"
+                                        :data-toggle "dropdown"} "Administrar"]
+          [:div.dropdown-menu
+           (build-admin)]])
+       [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]))
 
 (defn menus-public []
   (list
@@ -105,7 +124,7 @@
           js
           [:div#r {:data-options "region:'south'"
                    :style "height:25px;text-align:center;"}
-           [:span "Copyright &copy" (t/year (t/now)) " - All Rights Reserved"]]]))
+           [:span "Copyright &copy" (t/year (t/now)) " PescaSoft - All Rights Reserved"]]]))
 
 (defn error-404 [error return-url]
   [:div
