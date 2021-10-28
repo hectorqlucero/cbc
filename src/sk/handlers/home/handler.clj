@@ -68,5 +68,8 @@
   []
   (try
     (session/clear!)
-    (redirect "/")
+    (redirect (:base-url config))
     (catch Exception e (.getMessage e))))
+
+(comment
+  (println "base-url: " (:base-url config)))
