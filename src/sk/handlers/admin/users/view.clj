@@ -7,7 +7,6 @@
 (def dialog-fields
   (list
    [:input {:type "hidden" :id "id" :name "id"}]
-   (build-image-field)
    (build-field
     {:id           "username"
      :name         "username"
@@ -82,8 +81,6 @@
     "/admin/users"
     (list
      [:th {:data-options "field:'username',sortable:true,fixed:false,width:100"} "Usuario [clic para seleccionar]"]
-     [:th {:data-options "field:'imagen',sortable:true,fixed:false,width:100"
-           :formatter "imagenShow"} "Foto [clic foto +-]"]
      [:th {:data-options "field:'lastname',sortable:true,fixed:false,width:100"} "Apellidos"]
      [:th {:data-options "field:'firstname',sortable:true,fixed:true,width:100"} "Nombre"]
      [:th {:data-options "field:'level',sortable:true,fixed:true,width:100"
@@ -107,32 +104,8 @@
   (list
    (include-js "/js/grid.js")
    [:script
-    (build-image-field-script)
     (str
      "
-  function resizeImage(imgObject) {
-    var img = $('#'+imgObject.id);
-    if(img.width() < 500) {
-      img.animate({width: '500', height: '500'}, 1000);
-    } else {
-      img.animate({width: img.attr(\"width\"), height: img.attr(\"height\")}, 1000);
-    }
-  }
-
-  function imagenShow(val, row, index) {
-    if(row.imagen !== null) {
-      let d = new Date();
-      let imgValue = val;
-      let imgError = 'this.src=\"/images/placeholder_profile.png\"';
-      let imgPath = " (:path config) ";
-      let imgSrc = imgPath + imgValue + '?' + d.getTime();
-      let imgTag = '<img id=img'+index+' src='+imgSrc+' onError='+imgError+' width=95 height=71 onclick=resizeImage(this) />';
-      return imgTag;
-    } else {
-      return row.imagen;
-    }
-  }
-
   function levelDesc(val, row, index) {
     if(row.level == 'A') {
       return 'Administrador';

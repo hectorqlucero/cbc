@@ -769,7 +769,7 @@
       onLoadSuccess: function(){
         let d = new Date();
         let imgValue = $('#imagen').val();
-        let imgPath = " (:path config) ";
+        let imgPath = " (:img-url config) ";
         let imgSrc = imgPath + imgValue + '?' + d.getTime();
         $('#image1').attr('src', imgSrc);
       }
@@ -798,7 +798,7 @@
         let d = new Date();
         let imgValue = val;
         let imgError = 'this.src=\"/images/placeholder_profile.png\"';
-        let imgPath = " (:path config) ";
+        let imgPath = " (:img-url config) ";
         let imgSrc = imgPath + imgValue + '?' + d.getTime();
         let imgTag = '<img id=img'+index+' src='+imgSrc+' onError='+imgError+' width=95 height=71 onclick=resizeImage(this) />';
         return imgTag;
