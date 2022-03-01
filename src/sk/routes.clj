@@ -5,7 +5,8 @@
             [sk.handlers.registrar.handler :as registrar]
             [sk.handlers.registro.handler :as registro]
             [sk.handlers.tref.handler :as table_ref]
-            [sk.handlers.eventos.handler :as eventos]))
+            [sk.handlers.eventos.handler :as eventos]
+            [sk.handlers.registered.handler :as registered]))
 
 (defroutes open-routes
   ;; Start table_ref
@@ -46,4 +47,9 @@
   (GET "/registrar/:carrera_id" [carrera_id] (registro/registrar carrera_id))
   (POST "/registrar/:carrera_id/save" request [] (registro/registrar-save request))
   ;; End registro
+
+  ;; Start display registered
+  (GET "/display/oregistered" req [] (registered/oregistrados req))
+  (GET "/display/oregistered/:carrera_id" [carrera_id] (registered/oregistered carrera_id))
+  ;; End display registered
   )

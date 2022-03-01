@@ -10,6 +10,7 @@
    from carreras 
    where carrera_id = ?
    order by
+   categoria_id,
    nombre,
    apell_paterno,
    apell_materno
@@ -17,6 +18,16 @@
 
 (defn get-registered [carrera_id]
   (Query db [registered-sql carrera_id]))
+
+(defn get-categoria [categoria-id]
+  (let [categoria (:descripcion (first (Query db ["select descripcion from categorias where id = ?" categoria-id])))]
+    categoria))
+
+(defn get-oregistered [carrera-id]
+  (let [rows (Query db [registered-sql carrera-id])]
+    (map (fn [row]
+           (let [categoria (get-categoria (:categoria_id row))]
+             (assoc row :categoria categoria))) rows)))
 
 (defn get-carrera-name [carrera_id]
   (:descripcion (first (Query db ["select descripcion from carrera where id = ?" carrera_id]))))
@@ -62,6 +73,8 @@
 
 (comment
   (get-carrera-name 1)
-  (get-active-carrera-name 1)
-  (get-registered 1)
+  (get-active-carrera-name 5)
+  (get-registered 5)
+  (get-oregistered 5)
+  (get-categoria 20)
   (get-register-row 1))

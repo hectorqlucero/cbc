@@ -1,5 +1,11 @@
 (ns sk.handlers.registered.handler
-  (:require [sk.handlers.registered.view :refer [registered-view registrados-view registered-pdf registered-js]]
+  (:require [sk.handlers.registered.view
+             :refer [registered-view
+                     registrados-view
+                     oregistered-view
+                     oregistrados-view
+                     registered-pdf
+                     registered-js]]
             [sk.layout :refer [application]]
             [cheshire.core :refer [generate-string]]
             [sk.models.crud :refer [Update db]]
@@ -16,6 +22,19 @@
         ok (get-session-id)
         js (registered-js)
         content (registered-view carrera_id)]
+    (application title ok js content)))
+
+(defn oregistrados [_]
+  (let [title "Corredores Registrados"
+        ok (get-session-id)
+        content (oregistrados-view)]
+    (application title ok nil content)))
+
+(defn oregistered [carrera_id]
+  (let [title "CORREDORES REGISTRADOS"
+        ok (get-session-id)
+        js nil
+        content (oregistered-view carrera_id)]
     (application title ok js content)))
 
 (defn imprimir [id]

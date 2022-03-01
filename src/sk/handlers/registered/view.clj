@@ -2,7 +2,7 @@
   (:require [hiccup.page :refer [html5]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-register-row]]))
+            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]]))
 
 ;; Start registrados
 (defn build-body [row]
@@ -24,8 +24,29 @@
      (map build-body (get-active-carreras))]]))
 ;; End registrados
 
+;; Start oregistrados
+(defn obuild-body [row]
+  (let [href (str "/display/oregistered/" (:id row))]
+    [:tr
+     [:td (:descripcion row)]
+     [:td [:a.btn.btn-primary {:role "button"
+                               :href href} "Registrados"]]]))
+
+(defn oregistrados-view []
+  (list
+   [:table.table-secondary.table-hover {:style "width:100%;height:auto;"}
+    [:caption.table-info "Seleccione la carrera o paseo al cual desea ver los registrados"]
+    [:thead.table-info
+     [:tr
+      [:th {:field "descripcion" :width "50"} "Carrera/Paseo"]
+      [:th {:width "50"} "Procesar"]]]
+    [:tbody
+     (map obuild-body (get-active-carreras))]]))
+;; End oregistrados
+
 (def cnt (atom 0))
 
+;; Start registered-view
 (defn my-body [row]
   (let [button-path (str "'" "/imprimir/registered/" (:id row) "'")
         comando (str "location.href = " button-path)]
@@ -73,6 +94,42 @@
         [:th "No Asignado"]
         [:th "Imprimir"]]]
       [:tbody (map my-body rows)]]]))
+;; End registered-view
+
+;; Start oregistered-view
+(defn omy-body [row]
+  [:tr
+   [:td (swap! cnt inc)]
+   [:td (:id row)]
+   [:td (:nombre row)]
+   [:td (:apell_paterno row)]
+   [:td (:apell_materno row)]
+   [:td (:pais row)]
+   [:td (:ciudad row)]
+   [:td (:club row)]
+   [:td (:categoria row)]])
+
+(defn oregistered-view [carrera_id]
+  (let [rows (get-oregistered carrera_id)
+        cnt (reset! cnt 0)]
+    [:div.container
+     [:center
+      [:h2 "CORREDORES REGISTRADOS"]
+      [:h3 (get-active-carrera-name carrera_id)]]
+     [:table.table.table-striped.table-hover.table-bordered
+      [:thead.table-primary
+       [:tr
+        [:th "#"]
+        [:th "ID"]
+        [:th "Nombre"]
+        [:th "Apellido Paterno"]
+        [:th "Apellido Materno"]
+        [:th "Pais"]
+        [:th "Ciudad"]
+        [:th "Club"]
+        [:th "Categoria"]]]
+      [:tbody (map omy-body rows)]]]))
+;; End oregistered-view
 
 (def table-style
   "border:1px solid black;border-padding:0;")

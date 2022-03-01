@@ -18,38 +18,38 @@
 
 (defn admin-menus []
   (list
-    [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+   [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
    [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
    [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
 
 (defn system-menus []
   (list
-    [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
-    [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
-    [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
+   [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+   [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
+   [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
 
 (defn menus-private []
   (list
-    [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
-     [:a.navbar-brand {:href "/"} (:site-name config)]
-     [:button.navbar-toggler {:type "button"
-                              :data-toggle "collapse"
-                              :data-target "#collapsibleNavbar"}
-      [:span.navbar-toggler-icon]]
-     [:div#collapsibleNavbar.collapse.navbar-collapse
-      [:ul.navbar-nav
-       (cond
-         (= (user-level) "U") (user-menus)
-         (= (user-level) "A") (admin-menus)
-         (= (user-level) "S") (system-menus))
-       (when (= (user-level) "S")
-         [:li.nav-item.dropdown
-          [:a.nav-link.dropdown-toggle {:href "#"
-                                        :id "navdrop"
-                                        :data-toggle "dropdown"} "Administrar"]
-          [:div.dropdown-menu
-           (build-admin)]])
-       [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]))
+   [:nav.navbar.navbar-expand-sm.navbar-light.bg-secondary.fixed-top
+    [:a.navbar-brand {:href "/"} (:site-name config)]
+    [:button.navbar-toggler {:type "button"
+                             :data-toggle "collapse"
+                             :data-target "#collapsibleNavbar"}
+     [:span.navbar-toggler-icon]]
+    [:div#collapsibleNavbar.collapse.navbar-collapse
+     [:ul.navbar-nav
+      (cond
+        (= (user-level) "U") (user-menus)
+        (= (user-level) "A") (admin-menus)
+        (= (user-level) "S") (system-menus))
+      (when (= (user-level) "S")
+        [:li.nav-item.dropdown
+         [:a.nav-link.dropdown-toggle {:href "#"
+                                       :id "navdrop"
+                                       :data-toggle "dropdown"} "Administrar"]
+         [:div.dropdown-menu
+          (build-admin)]])
+      [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]))
 
 (defn menus-public []
   (list
@@ -63,6 +63,7 @@
      [:ul.navbar-nav
       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
       [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
+      [:li.nav-item [:a.nav-link {:href "/display/oregistered"} "Registrados"]]
       [:li.nav-item [:a.nav-link {:href "/home/login"} "Conectar"]]]]]))
 
 (defn menus-none []
@@ -126,7 +127,26 @@
                    :style "height:25px;text-align:center;"}
            [:span "Copyright &copy" (t/year (t/now)) " PescaSoft - All Rights Reserved"]]]))
 
-(defn error-404 [error return-url]
-  [:div
-   [:p [:h3 [:b "Error: "]] error]
-   [:p [:h3 [:a {:href return-url} "Clic here to " [:strong "Return"]]]]])
+(defn error-404 [content return-url]
+  (html5 {:ng-app (:site-name config) :lang "es"}
+         [:head
+          [:title "Mesaje"]
+          [:meta {:charset "UTF-8"}]
+          [:meta {:name "viewport"
+                  :content "width=device-width, initial-scale=1"}]
+          (app-css)
+          [:link {:rel "shortcut icon"
+                  :type "image/x-icon"
+                  :href "data:image/x-icon;,"}]]
+         [:body {:style "width:100vw;height:98vh;border:1px solid #000;"}
+          [:div.container {:style "height:88vh;margin-top:75px;"}
+           (menus-none)
+           [:div.easyui-panel {:data-options "fit:true,border:false" :style "padding-left:14px;"}
+            [:div
+             [:p [:h3 [:b "Mensaje: "]] content]
+             [:p [:h3 [:a {:href return-url} "Clic aqui para " [:strong "Continuar"]]]]]]]
+
+          (app-js)
+          nil]
+         [:footer.bg-secondary.text-center.fixed-bottom
+          [:span  "Copyright &copy" (t/year (t/now)) " PescaSoft - All Rights Reserved"]]))
