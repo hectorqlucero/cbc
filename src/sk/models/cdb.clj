@@ -115,6 +115,17 @@
   ) ENGINE=InnoDB CHARSET=utf8")
 ;; End mensajes table
 
+;; Start creloj
+(def creloj-sql
+  "CREATE TABLE creloj (
+  id int NOT NULL primary key AUTO_INCREMENT,
+  carrera_id int NOT NULL,
+  numero_asignado varchar(100) DEFAULT NULL,
+  salida time(3) DEFAULT NULL,
+  llegada time(3) DEFAULT NULL
+  ) ENGINE=InnoDB CHARSET=utf8")
+;; End creloj
+
 (defn drop-tables
   "Drops tables if they exist"
   []
@@ -123,7 +134,8 @@
   (Query! db "DROP table IF EXISTS carreras")
   (Query! db "DROP table IF EXISTS categorias")
   (Query! db "DROP table IF EXISTS mensajes")
-  (Query! db "DROP table IF EXISTS carrera"))
+  (Query! db "DROP table IF EXISTS carrera")
+  (Query! db "DROP table IF EXISTS creloj"))
 
 (defn create-tables
   "Creates tables"
@@ -133,7 +145,8 @@
   (Query! db carrera-sql)
   (Query! db categorias-sql)
   (Query! db carreras-sql)
-  (Query! db mensajes-sql))
+  (Query! db mensajes-sql)
+  (Query! db creloj-sql))
 
 (defn populate-tables
   "Populates table with default data"
@@ -150,4 +163,5 @@
   (populate-tables))
 
 (comment
-  (reset-database))
+  (reset-database)
+  (Query! db creloj-sql))

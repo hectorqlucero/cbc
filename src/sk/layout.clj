@@ -20,13 +20,15 @@
   (list
    [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
    [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
-   [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
+   [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]
+   [:li.nav-item [:a.nav-link {:href "/display/creloj"} "Contra-Reloj"]]))
 
 (defn system-menus []
   (list
    [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
    [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
-   [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]))
+   [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]
+   [:li.nav-item [:a.nav-link {:href "/display/creloj"} "Contra-Reloj"]]))
 
 (defn menus-private []
   (list

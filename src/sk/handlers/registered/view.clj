@@ -61,6 +61,7 @@
      [:td (:telefono row)]
      [:td (:email row)]
      [:td (:club row)]
+     [:td (:categoria row)]
      [:td [:input#numero {:name "numero_asignado"
                           :type "textbox"
                           :label ""
@@ -72,7 +73,7 @@
                                                :target "_blank"} "Registro"]]]))
 
 (defn registered-view [carrera_id]
-  (let [rows (get-registered carrera_id)
+  (let [rows (get-oregistered carrera_id)
         cnt (reset! cnt 0)]
     [:div.container
      [:center
@@ -91,6 +92,7 @@
         [:th "Telefono"]
         [:th "Email"]
         [:th "Club"]
+        [:th "Categoria"]
         [:th "No Asignado"]
         [:th "Imprimir"]]]
       [:tbody (map my-body rows)]]]))
@@ -218,4 +220,6 @@
    }")])
 
 (comment
+  (get-registered 5)
+  (get-oregistered 5)
   (registrados-view))

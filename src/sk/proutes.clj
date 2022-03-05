@@ -6,7 +6,8 @@
             [sk.handlers.admin.categorias.handler :as categorias]
             [sk.handlers.admin.carrera.handler :as carrera]
             [sk.handlers.registered.handler :as registered]
-            [sk.handlers.admin.mensajes.handler :as mensajes]))
+            [sk.handlers.admin.mensajes.handler :as mensajes]
+            [sk.handlers.creloj.handler :as creloj]))
 
 (defroutes proutes
   ;; Start users
@@ -58,4 +59,11 @@
   (POST "/admin/carrera/save" req [] (carrera/carrera-save req))
   (POST "/admin/carrera/delete" req [] (carrera/carrera-delete req))
   ;; End carrera
+
+  ;; Start creloj
+  (GET "/display/creloj" req [] (creloj/registrados req))
+  (GET "/display/creloj/:carrera_id" [carrera_id] (creloj/contra-reloj carrera_id))
+  (GET "/update/salida/:id" [id] (creloj/contra-reloj-salida id))
+  (GET "/update/llegada/:id" [id] (creloj/contra-reloj-llegada id))
+  ;; End creloj
   )
