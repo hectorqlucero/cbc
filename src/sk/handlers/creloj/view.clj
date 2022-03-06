@@ -24,11 +24,11 @@
     (string/join ", "
                  (filter #(not (string/blank? %))
                          (conj []
-                               (when (> wk 0) (str wk " wk"))
-                               (when (> d 0) (str d " d"))
+                               (when (> wk 0) (str wk " semana"))
+                               (when (> d 0) (str d " dia"))
                                (when (> hr 0) (str hr " hr"))
                                (when (> min 0) (str min " min"))
-                               (when (> sec 0) (str sec " sec")))))))
+                               (when (> sec 0) (str sec " seg")))))))
 ;; End format seconds->duration
 
 ;; Start registrados-view
