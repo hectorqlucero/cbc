@@ -15,6 +15,7 @@
     (application title ok nil content)))
 
 (defn contra-reloj [carrera_id]
+  (creloj-view carrera_id)
   (let [title "CORREDORES REGISTRADOS"
         ok (get-session-id)
         js (creloj-js carrera_id)

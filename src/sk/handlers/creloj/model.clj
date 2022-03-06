@@ -1,18 +1,27 @@
 (ns sk.handlers.creloj.model
-  (:require [sk.models.crud :refer [Query db]]))
+  (:require [sk.models.crud :refer [Query db]]
+            [sk.models.util :refer [current_time_internal]]))
 
 (defn get-active-carrera []
   (:id (first (Query db "select id from carrera where activa='S'"))))
 
 (def registered-sql
   "
-   select *,
-   TIMEDIFF(salida,llegada) as tiempo
+   select
+   id,
+   nombre,
+   apell_paterno,
+   apell_materno,
+   numero_asignado,
+   categoria_id,
+   salida,
+   llegada,
+   ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
    from carreras 
    where NULLIF(numero_asignado,' ') IS NOT NULL AND carrera_id = ?
    order by
    categoria_id,
-   tiempo desc,
+   tiempo,
    nombre,
    apell_paterno,
    apell_materno
@@ -74,6 +83,7 @@
   (first (Query db [register-row-sql carrera_id])))
 
 (comment
+  (int (Math/floor (/ 3 2)))
   (get-carrera-name 1)
   (get-active-carrera-name 5)
   (get-registered 5)
