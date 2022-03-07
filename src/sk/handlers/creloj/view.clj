@@ -92,7 +92,6 @@
   [:script
    "
     function salida(id) {
-      let carrera_id = " carrera_id ";
       $.get('/update/salida/'+id, function(data) {
         var dta = JSON.parse(data);
         $.messager.show({
@@ -103,7 +102,6 @@
     }
 
     function llegada(id) {
-      let carrera_id = " carrera_id ";
       $.get('/update/llegada/'+id, function(data) {
         var dta = JSON.parse(data);
         $.messager.show({
