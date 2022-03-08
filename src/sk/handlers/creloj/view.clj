@@ -53,8 +53,10 @@
 
 ;; Start tiempo-view
 (defn my-body [row]
-  (let [slink (str "onclick = salida(" (:id row) ")")
-        elink (str "onclick = llegada(" (:id row) ")")
+  (let [slink (str "salida(" (:id row) ")")
+        dslink (str "salida_cambiar(" (:id row) ")")
+        elink (str "llegada(" (:id row) ")")
+        delink (str "llegada_cambiar(" (:id row) ")")
         segundos  (parse-int (:tiempo row))
         tiempo (if-not (nil? segundos) (seconds->duration segundos) nil)]
     [:tr
@@ -62,10 +64,20 @@
      [:td (str (:nombre row) " " (:apell_paterno row) " " (:apell_materno row))]
      [:td (:categoria row)]
      [:td [:strong (:numero_asignado row)]]
-     [:td (or (:salida row) [:input {:type "checkbox"
-                                     :onclick slink}])]
-     [:td (or (:llegada row) [:input {:type "checkbox"
-                                      :onclick elink}])]
+     [:td (if (:salida row)
+            [:input {:id (str "salida_" (:id row))
+                     :type "textbox"
+                     :value (:salida row)
+                     :onchange dslink}]
+            [:input {:type "checkbox"
+                     :onclick slink}])]
+     [:td (if (:llegada row)
+            [:input {:id  (str "llegada_" (:id row))
+                     :type "textbox"
+                     :value (:llegada row)
+                     :onchange delink}]
+            [:input {:type "checkbox"
+                     :onclick elink}])]
      [:td tiempo]]))
 
 (defn creloj-view [carrera_id]
@@ -73,7 +85,9 @@
     [:div.container
      [:center
       [:h2 "CORREDORES REGISTRADOS"]
-      [:h3 (get-active-carrera-name carrera_id)]]
+      [:h3 (get-active-carrera-name carrera_id)]
+      [:h4 [:a.btn.btn-primary {:role "button"
+                                :href (str "/creloj/csv/" carrera_id)} "Exportar a hoja electronica"]]]
      [:table.table.table-striped.table-hover.table-bordered
       [:thead.table-primary
        [:tr
@@ -98,7 +112,21 @@
           title: 'Procesado!',
           msg: dta.message
         })
+        window.location.href = '/display/creloj/'+" carrera_id ";
       })
+    }
+
+    function salida_cambiar(id) {
+     let llave = '#salida_'+id;
+     let valor = $(llave).val();
+     $.get('/change/salida/'+id+'/'+valor, function(data) {
+      var dta = JSON.parse(data);
+      $.messager.show({
+       title: 'Procesado!',
+       msg: dta.message
+      })
+      window.location.href = '/display/creloj/'+" carrera_id ";
+     })
     }
 
     function llegada(id) {
@@ -108,7 +136,21 @@
           title: 'Procesado!',
           msg: dta.message
         })
+        window.location.href = '/display/creloj/'+" carrera_id ";
       })
+    }
+
+    function llegada_cambiar(id) {
+     let llave = '#llegada_'+id;
+     let valor = $(llave).val();
+     $.get('/change/llegada/'+id+'/'+valor, function(data) {
+      var dta = JSON.parse(data);
+      $.messager.show({
+       title: 'Procesado!',
+       msg: dta.message
+      })
+      window.location.href = '/display/creloj/'+" carrera_id ";
+     })
     }
  "])
 ;; End crelog-scripts

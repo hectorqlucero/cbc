@@ -65,5 +65,8 @@
   (GET "/display/creloj/:carrera_id" [carrera_id] (creloj/contra-reloj carrera_id))
   (GET "/update/salida/:id" [id] (creloj/contra-reloj-salida id))
   (GET "/update/llegada/:id" [id] (creloj/contra-reloj-llegada id))
+  (GET "/change/salida/:id/:v" [id v] (creloj/contra-reloj-salida-cambiar id v))
+  (GET "/change/llegada/:id/:v" [id v] (creloj/contra-reloj-llegada-cambiar id v))
+  (GET "/creloj/csv/:carrera_id" [carrera_id] (creloj/generate-csv carrera_id))
   ;; End creloj
   )

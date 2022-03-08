@@ -14,6 +14,8 @@
    apell_materno,
    numero_asignado,
    categoria_id,
+   TIME_FORMAT(salida,'%H:%i:%s') as hora_salida,
+   TIME_FORMAT(llegada,'%H:%i:%s') as hora_llegada,
    salida,
    llegada,
    ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
