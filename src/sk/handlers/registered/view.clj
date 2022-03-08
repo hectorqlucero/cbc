@@ -1,8 +1,10 @@
 (ns sk.handlers.registered.view
   (:require [hiccup.page :refer [html5]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
+            [sk.models.util :refer [parse-int]]
+            [sk.handlers.creloj.view :refer [seconds->duration]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]]))
+            [sk.handlers.creloj.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]]))
 
 ;; Start registrados
 (defn build-body [row]
@@ -100,16 +102,19 @@
 
 ;; Start oregistered-view
 (defn omy-body [row]
-  [:tr
-   [:td (swap! cnt inc)]
-   [:td (:id row)]
-   [:td (:nombre row)]
-   [:td (:apell_paterno row)]
-   [:td (:apell_materno row)]
-   [:td (:pais row)]
-   [:td (:ciudad row)]
-   [:td (:club row)]
-   [:td (:categoria row)]])
+  (let [segundos (parse-int (:tiempo row))
+        tiempo (if-not (nil? segundos) (seconds->duration segundos) nil)]
+    [:tr
+     [:td (swap! cnt inc)]
+     [:td (:id row)]
+     [:td (:nombre row)]
+     [:td (:apell_paterno row)]
+     [:td (:apell_materno row)]
+     [:td (:pais row)]
+     [:td (:ciudad row)]
+     [:td (:club row)]
+     [:td (:categoria row)]
+     [:td tiempo]]))
 
 (defn oregistered-view [carrera_id]
   (let [rows (get-oregistered carrera_id)
@@ -129,7 +134,8 @@
         [:th "Pais"]
         [:th "Ciudad"]
         [:th "Club"]
-        [:th "Categoria"]]]
+        [:th "Categoria"]
+        [:th "Tiempo"]]]
       [:tbody (map omy-body rows)]]]))
 ;; End oregistered-view
 
