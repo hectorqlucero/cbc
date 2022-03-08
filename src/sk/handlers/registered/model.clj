@@ -16,6 +16,29 @@
    apell_materno
    ")
 
+(def oregistered-sql
+  "
+   select
+   id,
+   nombre,
+   apell_paterno,
+   apell_materno,
+   numero_asignado,
+   categoria_id,
+   TIME_FORMAT(salida,'%H:%i:%s') as hora_salida,
+   TIME_FORMAT(llegada,'%H:%i:%s') as hora_llegada,
+   salida,
+   llegada,
+   ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
+   from carreras 
+   where carrera_id = ?
+   order by
+   categoria_id,
+   tiempo,
+   nombre,
+   apell_paterno,
+   apell_materno
+   ")
 (defn get-registered [carrera_id]
   (Query db [registered-sql carrera_id]))
 
@@ -24,7 +47,7 @@
     categoria))
 
 (defn get-oregistered [carrera-id]
-  (let [rows (Query db [registered-sql carrera-id])]
+  (let [rows (Query db [oregistered-sql carrera-id])]
     (map (fn [row]
            (let [categoria (get-categoria (:categoria_id row))]
              (assoc row :categoria categoria))) rows)))

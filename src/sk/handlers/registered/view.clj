@@ -4,7 +4,7 @@
             [sk.models.util :refer [parse-int]]
             [sk.handlers.creloj.view :refer [seconds->duration]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.handlers.creloj.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]]))
+            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]]))
 
 ;; Start registrados
 (defn build-body [row]
