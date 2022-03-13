@@ -2,7 +2,7 @@
   (:require [hiccup.page :refer [include-js]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [sk.models.crud :refer [config]]
-            [sk.models.util :refer [build-dialog build-dialog-buttons build-field build-image-field build-image-field-script build-radio-buttons build-table]]))
+            [sk.models.util :refer [build-dialog build-dialog-buttons build-field build-image-field build-image-field-script build-radio-buttons build-table build-toolbar]]))
 
 (def dialog-fields
   (list
@@ -16,6 +16,15 @@
      :data-options "label:'Usuario:',
                      labelPosition:'top',
                      width:'100%',required: true"})
+   (build-field
+    {:id "password"
+     :name "password"
+     :class "easyui-passwordbox"
+     :prompt "Contraseña"
+     :data-options "label:'Contraseña:',
+                 labelPosition:'top',
+                 required:true,
+                 width:'100%'"})
    (build-field
     {:id           "firstname"
      :name         "firstname"
@@ -87,17 +96,7 @@
            :formatter "levelDesc"} "Nivel"]
      [:th {:data-options "field:'active',sortable:true,fixed:false,width:100"
            :formatter "statusDesc"} "Activo?"]))
-   (list ;Here we build a toolbar without the New button - we don't want to create users
-    [:div#toolbar
-     [:a {:href         "javascript:void(0)"
-          :class        "easyui-linkbutton"
-          :data-options "iconCls: 'icon-edit',plain: true"
-          :onclick      "editItem({})"} "Editar"]
-     [:a {:href         "javascript:void(0)"
-          :class        "easyui-linkbutton"
-          :data-options "iconCls: 'icon-remove',plain: true"
-          :onclick      "deleteItem()"} "Remover"]
-     [:div {:style "float: right"}]])
+   (build-toolbar)
    (build-dialog title dialog-fields)))
 
 (defn users-scripts []

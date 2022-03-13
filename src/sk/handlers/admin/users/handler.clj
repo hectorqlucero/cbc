@@ -3,7 +3,8 @@
             [sk.layout :refer [application]]
             [sk.models.crud :refer [build-form-delete build-form-row build-form-save]]
             [sk.models.grid :refer [build-grid]]
-            [sk.models.util :refer [get-session-id user-level]]))
+            [sk.models.util :refer [get-session-id user-level parse-int]]
+            [noir.util.crypt :as crypt]))
 
 (defn users
   [_]
@@ -38,7 +39,9 @@
 (defn users-save
   [{params :params}]
   (try
-    (let [table "users"]
+    (let [table "users"
+          id (:id params)
+          params (if (clojure.string/blank? id) (assoc params :password (crypt/encrypt (:password params))) params)]
       (build-form-save params table))
     (catch Exception e (.getMessage e))))
 
