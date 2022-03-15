@@ -19,6 +19,7 @@
   (GET "/table_ref/levels" [] (generate-string (table_ref/level-options)))
   (GET "/table_ref/get-carrera-name/:carrera_id" [carrera_id] (table_ref/get-carrera-name carrera_id))
   (GET "/table_ref/get-categorias/:carrera_id" [carrera_id] (generate-string (table_ref/get-categorias carrera_id)))
+  (GET "/table_ref/get-carreras" [] (generate-string (table_ref/get-carreras)))
   ;; End table_ref
 
   ;; Start home

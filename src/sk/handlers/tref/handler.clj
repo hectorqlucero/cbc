@@ -2,6 +2,18 @@
   (:require [sk.models.crud :refer [Query db]]
             [sk.models.util :refer [current_year get-image parse-int zpl]]))
 
+;; Start get-carreras
+(def get-carreras-sql
+  "SELECT
+  id AS value,
+  CONCAT(id,' -> ',descripcion,' [',activa,']') AS text
+  FROM carrera
+  ORDER BY id")
+
+(defn get-carreras []
+  (Query db get-carreras-sql))
+;; End get-carreras
+
 ;; Start categorias
 (def get-categorias-sql
   "SELECT
@@ -114,5 +126,6 @@
     ((keyword field) row)))
 
 (comment
+  (get-carreras)
   (get-categorias 1)
   (get-carrera-name 1))

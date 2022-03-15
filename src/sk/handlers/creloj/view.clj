@@ -1,7 +1,8 @@
 (ns sk.handlers.creloj.view
   (:require [hiccup.page :refer [html5]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.models.util :refer [parse-int]]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.models.util :refer [build-form build-field build-button parse-int]]
             [clojure.string :as string]
             [sk.handlers.creloj.model
              :refer [get-active-carrera-name get-oregistered get-register-row]]))
@@ -101,6 +102,63 @@
       [:tbody (map my-body rows)]]]))
 ;; End tiempo-view
 
+;; Start limpiar
+(defn limpiar-view []
+  (build-form
+   "Limpiar Contrareloj"
+   (anti-forgery-field)
+   (build-field
+    {:id "id"
+     :name "id"
+     :class "easyui-combobox"
+     :data-options "label:'Carrera:',
+                     labelPosition:'top',
+                     url:'/table_ref/get-carreras',
+                     method:'GET',
+                     required:true,
+                     width:'100%'"})
+   (build-button
+    {:href "javascript:void(0)"
+     :id "submit"
+     :text "Limpiar"
+     :class "easyui-linkbutton c6"
+     :onClick "submitForm()"})))
+
+(defn limpiar-script []
+  [:script
+   "
+    function submitForm() {
+        $('.fm').form('submit', {
+            onSubmit:function() {
+                if($(this).form('validate')) {
+                  $('a#submit').linkbutton('disable');
+                  $('a#submit').linkbutton({text: 'Processando!'});
+                }
+                return $(this).form('enableValidation').form('validate');
+            },
+            success: function(data) {
+                try {
+                    var dta = JSON.parse(data);
+                    if(dta.hasOwnProperty('url')) {
+                        window.location.href = dta.url;
+                    } else if(dta.hasOwnProperty('error')) {
+                        $.messager.show({
+                            title: 'Error: ',
+                            msg: dta.error
+                        });
+                        $('a#submit').linkbutton('enable');
+                        $('a#submit').linkbutton({text: 'Limpiar'});
+                    }
+                } catch(e) {
+                    console.error('Invalid JSON');
+                }
+            }
+        });
+    }
+   "])
+
+;; End limpiar
+
 ;; Start creloj-scripts
 (defn creloj-js [carrera_id]
   [:script
@@ -156,6 +214,7 @@
 ;; End crelog-scripts
 
 (comment
+  (limpiar-view)
   (seconds->duration 7249)
   (get-registered 5)
   (creloj-view 5))

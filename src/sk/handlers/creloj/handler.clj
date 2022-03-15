@@ -3,8 +3,8 @@
             [clojure.java.io :as io]
             [clojure.string :as st]
             [sk.handlers.creloj.view
-             :refer [registrados-view creloj-view creloj-js seconds->duration]]
-            [sk.handlers.creloj.model :refer [get-oregistered]]
+             :refer [registrados-view creloj-view creloj-js seconds->duration limpiar-view limpiar-script]]
+            [sk.handlers.creloj.model :refer [get-oregistered limpiar]]
             [sk.models.crud :refer [Update db]]
             [sk.models.util :refer [current_time_internal parse-int]]
             [cheshire.core :refer [generate-string]]
@@ -82,6 +82,20 @@
      :headers {"Content-Type" "text/csv"
                "Content-Disposition" (str "attachment; filename=" filename)}
      :body (slurp filename)}))
+
+(defn limpiar-form [_]
+  (let [title "Limpiar tiempos"
+        ok (get-session-id)
+        js (limpiar-script)
+        content (limpiar-view)]
+    (application title ok js content)))
+
+(defn limpiar-tiempos [{params :params}]
+  (let [carrera-id (:id params)
+        result (limpiar carrera-id)]
+    (if result
+      (generate-string {:url "/"})
+      (generate-string {:error "Incapaz de nulificar campos!"}))))
 
 (comment
   (remove-non-printable-characters nil)

@@ -69,4 +69,9 @@
   (GET "/change/llegada/:id/:v" [id v] (creloj/contra-reloj-llegada-cambiar id v))
   (GET "/creloj/csv/:carrera_id" [carrera_id] (creloj/generate-csv carrera_id))
   ;; End creloj
+
+  ;; Start limpiar
+  (GET "/admin/limpiar" req [] (creloj/limpiar-form req))
+  (POST "/admin/limpiar" req [] (creloj/limpiar-tiempos req))
+  ;; End limpiar
   )

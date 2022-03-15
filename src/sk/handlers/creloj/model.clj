@@ -1,5 +1,5 @@
 (ns sk.handlers.creloj.model
-  (:require [sk.models.crud :refer [Query db]]
+  (:require [sk.models.crud :refer [Query Query! db]]
             [sk.models.util :refer [current_time_internal]]))
 
 (defn get-active-carrera []
@@ -84,7 +84,21 @@
 (defn get-register-row [carrera_id]
   (first (Query db [register-row-sql carrera_id])))
 
+;; Start limpiar
+(def limpiar-sql
+  "
+  UPDATE carreras
+  SET salida = NULL, llegada = NULL
+  WHERE
+  carrera_id = ?
+  ")
+
+(defn limpiar [carrera-id]
+  (Query! db [limpiar-sql carrera-id]))
+;; End limpiar
+
 (comment
+  (limpiar 5)
   (int (Math/floor (/ 3 2)))
   (get-carrera-name 1)
   (get-active-carrera-name 5)

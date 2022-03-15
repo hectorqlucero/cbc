@@ -10,7 +10,8 @@
    [:a.dropdown-item {:href "/admin/eventos"} "Eventos"]
    [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]
    [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]
-   [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]))
+   [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]
+   [:a.dropdown-item {:href "/admin/limpiar"} "Limpiar Contrareloj"]))
 
 (defn user-menus []
   [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
