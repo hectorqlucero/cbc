@@ -97,7 +97,20 @@
   (Query! db [limpiar-sql carrera-id]))
 ;; End limpiar
 
+;; Start get-carreras-row
+(def get-carreras-row-sql
+  "
+  SELECT *
+  FROM carreras
+  WHERE carrera_id = ? and numero_asignado = ?
+  ")
+(defn get-carreras-row [carrera_id numero_asignado]
+  (let [row (first (Query db [get-carreras-row-sql carrera_id numero_asignado]))]
+    row))
+;; End get-carreras-row
+
 (comment
+  (get-carreras-row 5 6)
   (limpiar 5)
   (int (Math/floor (/ 3 2)))
   (get-carrera-name 1)

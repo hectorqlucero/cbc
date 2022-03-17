@@ -1,6 +1,9 @@
 (ns sk.handlers.tref.handler
   (:require [sk.models.crud :refer [Query db]]
-            [sk.models.util :refer [current_year get-image parse-int zpl]]))
+            [sk.models.util :refer [current_year current_time get-image parse-int zpl]]))
+
+(defn get-current-time []
+  (current_time))
 
 ;; Start get-carreras
 (def get-carreras-sql

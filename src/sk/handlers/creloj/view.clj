@@ -2,7 +2,7 @@
   (:require [hiccup.page :refer [html5]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.util :refer [build-form build-field build-button parse-int]]
+            [sk.models.util :refer [build-form build-field build-button parse-int current_time]]
             [clojure.string :as string]
             [sk.handlers.creloj.model
              :refer [get-active-carrera-name get-oregistered get-register-row]]))
@@ -34,12 +34,17 @@
 
 ;; Start registrados-view
 (defn build-body [row]
-  (let [href (str "/display/creloj/" (:id row))]
+  (let [href (str "/display/creloj/" (:id row))
+        sref (str "/display/salidas/" (:id row))
+        lref (str "/display/llegadas/" (:id row))]
     [:tr
      [:td (:descripcion row)]
      [:td [:a.btn.btn-primary {:role "button"
-                               :href href} "Contra Reloj"]]]))
-
+                               :href href} "Contra Reloj"]]
+     [:td [:a.btn.btn-primary {:role "button"
+                               :href sref} "Salidas"]]
+     [:td [:a.btn.btn-primary {:role "button"
+                               :href lref} "Llegadas"]]]))
 (defn registrados-view []
   (list
    [:table.table-secondary.table-hover {:style "width:100%;height:auto;"}
@@ -47,7 +52,9 @@
     [:thead.table-info
      [:tr
       [:th {:field "descripcion" :width "50"} "Carrera/Paseo"]
-      [:th {:width "50"} "Procesar"]]]
+      [:th {:width "20"} "Procesar"]
+      [:th {:width "20"} "Procesar"]
+      [:th {:width "20"} "Procesar"]]]
     [:tbody
      (map build-body (get-active-carreras))]]))
 ;; End registrados-view
@@ -212,6 +219,112 @@
     }
  "])
 ;; End crelog-scripts
+
+;; Start salidas
+(defn salidas-view [carrera_id]
+  [:div.container
+   [:div.row {:style "width:200px;border:1px; solid black;background:white;"}
+    [:div.col-sm
+     [:h1 "SALIDAS"]
+     [:div#runningTime]
+     [:hr]
+     [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
+     [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
+                               :onclick "procesar()"} "Salir"]]]])
+
+(defn salidas-js [carrera_id]
+  [:script
+   "
+   function procesar() {
+    let numero = $('#numero').val();
+    $.ajax({
+      method: 'GET',
+      url: '/procesar/salidas/" carrera_id "/'+numero,
+      success: function(result) {
+        var json = JSON.parse(result);
+        if(json.error) {
+          $.messager.show({
+            title: 'Error',
+            msg: json.error
+          });
+        } else {
+          $.messager.show({
+            title: 'Exito',
+            msg: json.success
+          });
+        }
+      }
+    });
+    $('#numero').val('');
+   }
+
+   $(document).ready(function() {
+    setInterval(runningTime, 1000);
+   });
+
+   function runningTime() {
+    $.ajax({
+      url: '/table_ref/get-current-time',
+      success: function(data) {
+        $('#runningTime').html(data);
+      },
+    });
+   }
+   "])
+;; End salidas
+
+;; Start llegadas
+(defn llegadas-view [carrera_id]
+  [:div.container
+   [:div.row {:style "width:200px;border:1px; solid black;background:white;"}
+    [:div.col-sm
+     [:h1 "LLEGADAS"]
+     [:div#runningTime]
+     [:hr]
+     [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
+     [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
+                               :onclick "procesar_l()"} "LLegar"]]]])
+
+(defn llegadas-js [carrera_id]
+  [:script
+   "
+   function procesar_l() {
+    let numero = $('#numero').val();
+    $.ajax({
+      method: 'GET',
+      url: '/procesar/llegadas/" carrera_id "/'+numero,
+      success: function(result) {
+        var json = JSON.parse(result);
+        if(json.error) {
+          $.messager.show({
+            title: 'Error',
+            msg: json.error
+          });
+        } else {
+          $.messager.show({
+            title: 'Exito',
+            msg: json.success
+          });
+        }
+      }
+    });
+    $('#numero').val('');
+   }
+
+   $(document).ready(function() {
+    setInterval(runningTime, 1000);
+   });
+
+   function runningTime() {
+    $.ajax({
+      url: '/table_ref/get-current-time',
+      success: function(data) {
+        $('#runningTime').html(data);
+      },
+    });
+   }
+   "])
+;; End llegadas
 
 (comment
   (limpiar-view)

@@ -63,11 +63,15 @@
   ;; Start creloj
   (GET "/display/creloj" req [] (creloj/registrados req))
   (GET "/display/creloj/:carrera_id" [carrera_id] (creloj/contra-reloj carrera_id))
+  (GET "/display/salidas/:carrera_id" [carrera_id] (creloj/salidas carrera_id))
+  (GET "/display/llegadas/:carrera_id" [carrera_id] (creloj/llegadas carrera_id))
   (GET "/update/salida/:id" [id] (creloj/contra-reloj-salida id))
   (GET "/update/llegada/:id" [id] (creloj/contra-reloj-llegada id))
   (GET "/change/salida/:id/:v" [id v] (creloj/contra-reloj-salida-cambiar id v))
   (GET "/change/llegada/:id/:v" [id v] (creloj/contra-reloj-llegada-cambiar id v))
   (GET "/creloj/csv/:carrera_id" [carrera_id] (creloj/generate-csv carrera_id))
+  (GET "/procesar/salidas/:carrera_id/:numero" [carrera_id numero] (creloj/procesar-salidas carrera_id numero))
+  (GET "/procesar/llegadas/:carrera_id/:numero" [carrera_id numero] (creloj/procesar-llegadas carrera_id numero))
   ;; End creloj
 
   ;; Start limpiar

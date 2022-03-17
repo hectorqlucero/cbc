@@ -3,8 +3,8 @@
             [clojure.java.io :as io]
             [clojure.string :as st]
             [sk.handlers.creloj.view
-             :refer [registrados-view creloj-view creloj-js seconds->duration limpiar-view limpiar-script]]
-            [sk.handlers.creloj.model :refer [get-oregistered limpiar]]
+             :refer [registrados-view creloj-view creloj-js seconds->duration limpiar-view limpiar-script salidas-view salidas-js llegadas-view llegadas-js]]
+            [sk.handlers.creloj.model :refer [get-oregistered limpiar get-carreras-row]]
             [sk.models.crud :refer [Update db]]
             [sk.models.util :refer [current_time_internal parse-int]]
             [cheshire.core :refer [generate-string]]
@@ -18,8 +18,21 @@
         content (registrados-view)]
     (application title ok nil content)))
 
+(defn salidas [carrera_id]
+  (let [title "SALIDAS DE CORREDORES"
+        ok (get-session-id)
+        js (salidas-js carrera_id)
+        content (salidas-view carrera_id)]
+    (application title ok js content)))
+
+(defn llegadas [carrera_id]
+  (let [title "LLEGADAS DE CORREDORES"
+        ok (get-session-id)
+        js (llegadas-js carrera_id)
+        content (llegadas-view carrera_id)]
+    (application title ok js content)))
+
 (defn contra-reloj [carrera_id]
-  (creloj-view carrera_id)
   (let [title "CORREDORES REGISTRADOS"
         ok (get-session-id)
         js (creloj-js carrera_id)
@@ -96,6 +109,24 @@
     (if result
       (generate-string {:url "/"})
       (generate-string {:error "Incapaz de nulificar campos!"}))))
+
+(defn procesar-salidas [carrera_id numero_asignado]
+  (let [row (get-carreras-row carrera_id numero_asignado)
+        id (:id row)
+        postvars {:salida (current_time_internal)}
+        result (Update db :carreras postvars ["id = ?" id])]
+    (if (> (first (seq result)) 0)
+      (generate-string {:success "Procesado correctamente!"})
+      (generate-string {:error "No se pudo procesar, o numero asignado incorrecto!"}))))
+
+(defn procesar-llegadas [carrera_id numero_asignado]
+  (let [row (get-carreras-row carrera_id numero_asignado)
+        id (:id row)
+        postvars {:llegada (current_time_internal)}
+        result (Update db :carreras postvars ["id = ?" id])]
+    (if (> (first (seq result)) 0)
+      (generate-string {:success "Procesado correctamente!"})
+      (generate-string {:error "No se pudo procesar, o numero asignado incorrecto!"}))))
 
 (comment
   (remove-non-printable-characters nil)
