@@ -386,3 +386,6 @@
         (generate-string {:success "Eliminado con éxito!"})
         (generate-string {:error "Incapaz de eliminar!"})))
     (catch Exception e (.getMessage e))))
+
+(comment
+  (get-config))

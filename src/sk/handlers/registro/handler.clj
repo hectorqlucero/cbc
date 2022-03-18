@@ -1,6 +1,6 @@
 (ns sk.handlers.registro.handler
   (:require [sk.models.util :refer [get-session-id]]
-            [sk.models.crud :refer 
+            [sk.models.crud :refer
              [Query db config Save crud-fix-id build-postvars]]
             [sk.handlers.registro.model :refer
              [get-active-carrera-name registrar-mensaje correo-mensaje]]
@@ -93,8 +93,8 @@
           corredor-email-body (corredor-email-body params (:generated_key (first result)))]
       (if (seq result)
         (do
-          (send-email host email-body)
-          (send-email host corredor-email-body)
+          (future (send-email host email-body))
+          (future (send-email host corredor-email-body))
           (generate-string {:success success}))
         (generate-string {:error "No se puede procesar!"})))
     (catch Exception e (.getMessage e))))
@@ -102,25 +102,24 @@
 
 (comment
   (email-body {:params {:id nil
-                            :nombre "Hector"
-                            :apell_paterno "Lucero"
-                            :apell_materno "Quihuis"
-                            :pais "Mexico"
-                            :ciudad "Mexicali"
-                            :telefono "6861362245"
-                            :email "hectorqlucero@gmail.com"
-                            :sexo "M"
-                            :fecha_nacimiento "1957-02-07"
-                            :direccion "Islas Salomon #271, Fraccionamiento Santa Monica"
-                            :club "Ciclismo Mexicali"
-                            :carrera_id 1
-                            :categoria_id 1}})
+                        :nombre "Hector"
+                        :apell_paterno "Lucero"
+                        :apell_materno "Quihuis"
+                        :pais "Mexico"
+                        :ciudad "Mexicali"
+                        :telefono "6861362245"
+                        :email "hectorqlucero@gmail.com"
+                        :sexo "M"
+                        :fecha_nacimiento "1957-02-07"
+                        :direccion "Islas Salomon #271, Fraccionamiento Santa Monica"
+                        :club "Ciclismo Mexicali"
+                        :carrera_id 1
+                        :categoria_id 1}})
   (corredor-email-body {:nombre "Hector"
                         :apell_paterno "Lucero"
                         :apell_materno "Quihuis"
                         :email "hectorqlucero@gmail.com"
-                        :carrera_id 1
-                        } 1)
+                        :carrera_id 1} 1)
   (registrar-save {:params {:id nil
                             :nombre "Hector"
                             :apell_paterno "Lucero"

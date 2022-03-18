@@ -1,8 +1,8 @@
 (ns sk.handlers.registro.view
-  (:require [hiccup.page :refer 
+  (:require [hiccup.page :refer
              [html5 include-js]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
-            [sk.handlers.registro.model :refer 
+            [sk.handlers.registro.model :refer
              [get-active-carrera-name get-registered get-register-row get-active-carreras]]
             [sk.models.util :refer
              [build-button build-field build-form build-radio-buttons]]))
@@ -36,101 +36,104 @@
                           width:'100%',
                           url:'/table_ref/get-categorias/" carrera_id "'")]
     (list
-      [:input {:type "hidden" :name "id" :id "id"}]
-      [:input {:type "hidden" :name "carrera_id" :id "carrera_id" :value (str carrera_id)}]
-      (build-field
-        {:id "nombre"
-         :name "nombre"
-         :class "easyui-textbox"
-         :prompt "Nombre aqui..."
-         :data-options "label:'Nombre:',
+     [:input {:type "hidden" :name "id" :id "id"}]
+     [:input {:type "hidden" :name "carrera_id" :id "carrera_id" :value (str carrera_id)}]
+     (build-field
+      {:id "nombre"
+       :name "nombre"
+       :class "easyui-textbox"
+       :prompt "Nombre aqui..."
+       :data-options "label:'Nombre:',
                        labelPosition:'top',
                        required:true,
                        width:'100%'"})
-      (build-field
-        {:id "apell_paterno"
-         :name "apell_paterno"
-         :class "easyui-textbox"
-         :prompt "Apellido paterno aqui..."
-         :data-options "label:'Apellido paterno:',
+     (build-field
+      {:id "apell_paterno"
+       :name "apell_paterno"
+       :class "easyui-textbox"
+       :prompt "Apellido paterno aqui..."
+       :data-options "label:'Apellido paterno:',
                        labelPosition:'top',
                        required:true,
                        width:'100%'"})
-      (build-field
-        {:id "apell_materno"
-         :name "apell_materno"
-         :class "easyui-textbox"
-         :prompt "Apellido materno aqui..."
-         :data-options "label:'Apellido materno:',
+     (build-field
+      {:id "apell_materno"
+       :name "apell_materno"
+       :class "easyui-textbox"
+       :prompt "Apellido materno aqui..."
+       :data-options "label:'Apellido materno:',
                        labelPosition:'top',
                        required:true,
                        width:'100%'"})
-      (build-field
-        {:id "pais"
-         :name "pais"
-         :class "easyui-textbox"
-         :prompt "Pais aqui..."
-         :data-options "label:'Pais:',
+     (build-field
+      {:id "pais"
+       :name "pais"
+       :class "easyui-textbox"
+       :prompt "Pais aqui..."
+       :data-options "label:'Pais:',
                        labelPosition:'top',
                        required:true,
                        width:'100%'"})
-      (build-field
-        {:id "ciudad"
-         :name "ciudad"
-         :class "easyui-textbox"
-         :prompt "Ciudad aqui..."
-         :data-options "label:'Ciudad:',
+     (build-field
+      {:id "ciudad"
+       :name "ciudad"
+       :class "easyui-textbox"
+       :prompt "Ciudad aqui..."
+       :data-options "label:'Ciudad:',
                        labelPosition:'top',
                        required:true,
                        width:'100%'"})
-      (build-field
-        {:id "telefono"
-         :name "telefono"
-         :class "easyui-textbox"
-         :data-options "label:'Telefono:',labelPosition:'top',width:'100%'"})
-      (build-field
-        {:id "email"
-         :name "email"
-         :class "easyui-textbox easyui-validatebox"
-         :prompt "Email aqui..."
-         :validType "email"
-         :data-options "label:'Email:',labelPosition:'top',required:true,width:'100%'"})
-      (build-radio-buttons
-        "Sexo:"
-        (list
-          {:id "sexo_m"
-           :name "sexo"
-           :class "easyui-radiobutton"
-           :value "M"
-           :data-options "label:'Masculino',checked:true"}
-          {:id "sexo_f"
-           :name "sexo"
-           :class "easyui-radiobutton"
-           :value "F"
-           :data-options "label:'Femenino'"}))
-      (build-field
-        {:id "fecha_nacimiento"
-         :name "fecha_nacimiento"
-         :class "easyui-datebox"
-         :prompt "mm/dd/aaaa ejemplo: 02/07/1957  es Febrero 7 1957"
-         :data-options "label:'Fecha de Nacimiento:',labelPosition:'top',required:true,width:'100%'"})
-      (build-field
-        {:id "direccion"
-         :name "direccion"
-         :class "easyui-textbox"
-         :prompt "Domicilio aqui..."
-         :data-options "label:'Domicilio:', labelPosition:'top', required:false, width:'100%'"})
-      (build-field
-        {:id "club"
-         :name "club"
-         :class "easyui-textbox"
-         :prompt "Si no pertenece a un club responda 'ninguno'"
-         :data-options "label:'Club:', labelPosition:'top', required:true, width:'100%'"})
-      (build-field
-        {:id "categoria_id"
-         :name "categoria_id"
-         :class "easyui-combobox"
-         :data-options data-options}))))
+     (build-field
+      {:id "telefono"
+       :name "telefono"
+       :class "easyui-textbox"
+       :data-options "label:'Telefono:',labelPosition:'top',width:'100%'"})
+     (build-field
+      {:id "email"
+       :name "email"
+       :class "easyui-textbox easyui-validatebox"
+       :prompt "Email aqui..."
+       :validType "email"
+       :data-options "label:'Email:',labelPosition:'top',required:true,width:'100%'"})
+     (build-radio-buttons
+      "Sexo:"
+      (list
+       {:id "sexo_m"
+        :name "sexo"
+        :class "easyui-radiobutton"
+        :value "M"
+        :data-options "label:'Masculino',checked:true"}
+       {:id "sexo_f"
+        :name "sexo"
+        :class "easyui-radiobutton"
+        :value "F"
+        :data-options "label:'Femenino'"}))
+     (build-field
+      {:id "edad"
+       :name "edad"
+       :class "easyui-textbox"
+       :prompt "Edad ej. 20 años"
+       :data-options "label:'Edad:',
+                       labelPosition:'top',
+                       required:true,
+                       width:'100%'"})
+     (build-field
+      {:id "direccion"
+       :name "direccion"
+       :class "easyui-textbox"
+       :prompt "Domicilio aqui..."
+       :data-options "label:'Domicilio:', labelPosition:'top', required:false, width:'100%'"})
+     (build-field
+      {:id "club"
+       :name "club"
+       :class "easyui-textbox"
+       :prompt "Si no pertenece a un club responda 'ninguno'"
+       :data-options "label:'Club:', labelPosition:'top', required:true, width:'100%'"})
+     (build-field
+      {:id "categoria_id"
+       :name "categoria_id"
+       :class "easyui-combobox"
+       :data-options data-options}))))
 
 (def registrar-buttons
   (build-button
