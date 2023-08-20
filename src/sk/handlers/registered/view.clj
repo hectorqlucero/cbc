@@ -2,15 +2,16 @@
   (:require [hiccup.page :refer [html5]]
             [sk.models.crud :refer [config]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
-            [clojure.java.io :as io]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [clj.qrgen :refer [as-file from]]
             [sk.models.util :refer [parse-int zpl]]
             [sk.handlers.creloj.view :refer [seconds->duration]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]])
-  (:import java.text.SimpleDateFormat
-           [java.util Calendar UUID]))
+            [sk.handlers.registered.model
+             :refer [get-active-carrera-name
+                     get-registered
+                     get-oregistered
+                     get-register-row
+                     create-barcode]]))
 
 ;; Start registrados
 (defn build-body [row]
@@ -145,28 +146,8 @@
       [:tbody (map omy-body rows)]]]))
 ;; End oregistered-view
 
-;; Start QR
 (def table-style
   "border:1px solid black;border-padding:0;")
-
-(def temp-dir
-  (let [dir (str (System/getProperty "java.io.tmpdir") "/barcodes/")]
-    (.mkdir (io/file dir))
-    dir))
-
-(defn generate-barcode [id]
-  (let [barcode-body (str (config :base-url) "update/number/" (str id))
-        barcode (as-file (from barcode-body) (str (str  id) ".png"))]
-    barcode))
-
-(defn copy-file [source-path dest-path]
-  (io/copy (io/file source-path) (io/file dest-path)))
-
-(defn create-barcode [id]
-  (let [uuid (str (UUID/randomUUID))]
-    (copy-file (generate-barcode id) (str temp-dir id ".png"))
-    (str (config :img-url) id ".png?" uuid)))
-;; End QR
 
 (defn build-html [id]
   (let [row (get-register-row id)]

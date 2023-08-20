@@ -1,5 +1,9 @@
 (ns sk.handlers.registered.model
-  (:require [sk.models.crud :refer [Query db]]))
+  (:require [sk.models.crud :refer [Query db config]]
+            [clojure.java.io :as io]
+            [clj.qrgen :refer [as-file from]])
+  (:import java.text.SimpleDateFormat
+           [java.util Calendar UUID]))
 
 (defn get-active-carrera []
   (:id (first (Query db "select id from carrera where activa='S'"))))
@@ -102,7 +106,28 @@
 (defn get-register-row [carrera_id]
   (first (Query db [register-row-sql carrera_id])))
 
+;; Start QR
+(def temp-dir
+  (let [dir (str (System/getProperty "java.io.tmpdir") "/barcodes/")]
+    (.mkdir (io/file dir))
+    dir))
+
+(defn generate-barcode [id]
+  (let [barcode-body (str (config :base-url) "update/number/" (str id))
+        barcode (as-file (from barcode-body) (str (str  id) ".png"))]
+    barcode))
+
+(defn copy-file [source-path dest-path]
+  (io/copy (io/file source-path) (io/file dest-path)))
+
+(defn create-barcode [id]
+  (let [uuid (str (UUID/randomUUID))]
+    (copy-file (generate-barcode id) (str temp-dir id ".png"))
+    (str (config :img-url) id ".png?" uuid)))
+;; End QR
+
 (comment
+  (create-barcode 175)
   (get-carrera-name 1)
   (get-active-carrera-name 5)
   (get-registered 5)
