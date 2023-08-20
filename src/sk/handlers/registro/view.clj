@@ -2,6 +2,7 @@
   (:require [hiccup.page :refer
              [html5 include-js]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
+            [sk.handlers.registered.model :refer [create-barcode]]
             [sk.handlers.registro.model :refer
              [get-active-carrera-name get-registered get-register-row get-active-carreras]]
             [sk.models.util :refer
@@ -213,6 +214,7 @@
   (let [row (get-register-row id)]
     (html5
      [:div
+      [:img {:src (create-barcode id)}]
       [:center [:h2 [:strong (:carrera row)]]]
       [:center [:h3 [:strong "FORMATO DE REGISTRO"]]] [:span {:style "float:right;margin-left:10px;"} [:strong "identificador: " (:id row)]]
       [:span "DATOS PERSONALES:"] [:span {:style "float:right;"} [:strong "Fecha: " (:date row)]]
