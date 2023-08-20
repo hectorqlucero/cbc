@@ -53,5 +53,7 @@
   ;; Start display registered
   (GET "/display/oregistered" req [] (registered/oregistrados req))
   (GET "/display/oregistered/:carrera_id" [carrera_id] (registered/oregistered carrera_id))
+  (GET "/update/number/:carrera_id" [carrera_id] (registered/update-number carrera_id))
+  (POST "/update/number" req [] (registered/!update-number req))
   ;; End display registered
   )

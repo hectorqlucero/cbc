@@ -1,10 +1,16 @@
 (ns sk.handlers.registered.view
   (:require [hiccup.page :refer [html5]]
+            [sk.models.crud :refer [config]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
-            [sk.models.util :refer [parse-int]]
+            [clojure.java.io :as io]
+            [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [clj.qrgen :refer [as-file from]]
+            [sk.models.util :refer [parse-int zpl]]
             [sk.handlers.creloj.view :refer [seconds->duration]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]]))
+            [sk.handlers.registered.model :refer [get-active-carrera-name get-registered get-oregistered get-register-row]])
+  (:import java.text.SimpleDateFormat
+           [java.util Calendar UUID]))
 
 ;; Start registrados
 (defn build-body [row]
@@ -139,13 +145,34 @@
       [:tbody (map omy-body rows)]]]))
 ;; End oregistered-view
 
+;; Start QR
 (def table-style
   "border:1px solid black;border-padding:0;")
+
+(def temp-dir
+  (let [dir (str (System/getProperty "java.io.tmpdir") "/barcodes/")]
+    (.mkdir (io/file dir))
+    dir))
+
+(defn generate-barcode [id]
+  (let [barcode-body (str (config :base-url) "update/number/" (str id))
+        barcode (as-file (from barcode-body) (str (str  id) ".png"))]
+    barcode))
+
+(defn copy-file [source-path dest-path]
+  (io/copy (io/file source-path) (io/file dest-path)))
+
+(defn create-barcode [id]
+  (let [uuid (str (UUID/randomUUID))]
+    (copy-file (generate-barcode id) (str temp-dir id ".png"))
+    (str (config :img-url) id ".png?" uuid)))
+;; End QR
 
 (defn build-html [id]
   (let [row (get-register-row id)]
     (html5
      [:div
+      [:img {:src (create-barcode id)}]
       [:center [:h2 [:strong (:carrera row)]]]
       [:center [:h3 [:strong "FORMATO DE REGISTRO"]]] [:span {:style "float:right;margin-left:10px;"} [:strong "identificador: " (:id row)]]
       [:span "DATOS PERSONALES:"] [:span {:style "float:right;"} [:strong "Fecha: " (:date row)]]
@@ -204,6 +231,64 @@
        [:center [:hr {:style "width:70%;"}]]
        [:center [:p [:strong "Firma y Aceptación del participante y/o tutor:"]]]]])))
 
+;; Start update-number-view
+(defn update-number-view [carrera_id]
+  (list
+   [:div.easyui-panel {:title "Actualizar numero asignado"
+                       :style "width:100%;max-width:400px;padding:30px 60px;"}
+    [:form {:id "uform"
+            :method "post"
+            :action "/update/number"}
+     (anti-forgery-field)
+     [:input {:type "hidden"
+              :name "id"
+              :value carrera_id}]
+     [:div {:style "margin-bottom:20px;"}
+      [:input.easyui-textbox {:id "numero_asignado"
+                              :name "numero_asignado"
+                              :style "width:100%"
+                              :prompt "Numero aqui..."
+                              :data-options "label:'Numero:',required:true"}]]]
+
+    [:div {:style "text-align:center;padding:5px 0"}
+     [:a#submit.easyui-linkbutton {:href "javascript:void(0)"
+                                   :onclick "submitForm()"
+                                   :style "width:80px;"} "Procesar"]]]))
+
+(defn update-number-script []
+  [:script
+   "
+   function submitForm(){
+    $('#uform').form('submit', {
+      onSubmit: function() {
+        if($(this).form('validate')) {
+          $('a#submit').linkbutton('disable');
+        }
+        return $(this).form('validate');
+      },
+      success: function(result) {
+        var json = JSON.parse(result);
+        if(json.error) {
+          $.messager.alert({
+            title: 'Error',
+            msg: json.error
+          });
+          $('a#submit').linkbutton('enable');
+        } else {
+          $.messager.alert({
+            title: 'Exito',
+            msg: json.success,
+            fn: function() {
+              window.location.href = '/';
+            }
+          });
+        }
+      }
+    });
+   }
+   "])
+;; End update-number-view
+
 (defn registered-pdf [id]
   (let [html (build-html id)
         filename (str "registro_" id ".pdf")]
@@ -226,6 +311,8 @@
    }")])
 
 (comment
-  (get-registered 5)
-  (get-oregistered 5)
+  (create-barcode 175)
+  (build-html 175)
+  (get-registered 175)
+  (get-oregistered 175)
   (registrados-view))
