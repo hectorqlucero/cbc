@@ -64,7 +64,7 @@
        :prompt "Apellido materno aqui..."
        :data-options "label:'Apellido materno:',
                        labelPosition:'top',
-                       required:true,
+                       required:false,
                        width:'100%'"})
      (build-field
       {:id "pais"
@@ -73,7 +73,7 @@
        :prompt "Pais aqui..."
        :data-options "label:'Pais:',
                        labelPosition:'top',
-                       required:true,
+                       required:false,
                        width:'100%'"})
      (build-field
       {:id "ciudad"
@@ -82,7 +82,7 @@
        :prompt "Ciudad aqui..."
        :data-options "label:'Ciudad:',
                        labelPosition:'top',
-                       required:true,
+                       required:false,
                        width:'100%'"})
      (build-field
       {:id "telefono"
@@ -116,7 +116,7 @@
        :prompt "Edad ej. 20 años"
        :data-options "label:'Edad:',
                        labelPosition:'top',
-                       required:true,
+                       required:false,
                        width:'100%'"})
      (build-field
       {:id "direccion"
@@ -129,7 +129,7 @@
        :name "club"
        :class "easyui-textbox"
        :prompt "Si no pertenece a un club responda 'ninguno'"
-       :data-options "label:'Club:', labelPosition:'top', required:true, width:'100%'"})
+       :data-options "label:'Club:', labelPosition:'top', required:false, width:'100%'"})
      (build-field
       {:id "categoria_id"
        :name "categoria_id"
@@ -265,7 +265,6 @@
          [:td {:style "font-size:0.7em;"} [:strong (:d1 row)]]]
         [:tr {:align "center"}
          [:td {:style "font-size:0.7em;"} [:strong (:d2 row)]]]]]
-      [:br]
       [:br]
       [:br]
       [:br]
