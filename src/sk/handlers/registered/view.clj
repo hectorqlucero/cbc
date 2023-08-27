@@ -205,8 +205,6 @@
         [:tr {:align "center"}
          [:td {:style "font-size:0.7em;"} [:strong (:d2 row)]]]]]
       [:br]
-      [:br]
-      [:br]
       [:div {:style "width:100%;font-size:1em;font-weight:bold;text:center;"}
        [:center [:hr {:style "width:70%;"}]]
        [:center [:p [:strong "Firma y Aceptación del participante y/o tutor:"]]]]])))
