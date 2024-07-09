@@ -49,42 +49,6 @@
                        required:true,
                        width:'100%'"})
      (build-field
-      {:id "apell_paterno"
-       :name "apell_paterno"
-       :class "easyui-textbox"
-       :prompt "Apellido paterno aqui..."
-       :data-options "label:'Apellido paterno:',
-                       labelPosition:'top',
-                       required:true,
-                       width:'100%'"})
-     (build-field
-      {:id "apell_materno"
-       :name "apell_materno"
-       :class "easyui-textbox"
-       :prompt "Apellido materno aqui..."
-       :data-options "label:'Apellido materno:',
-                       labelPosition:'top',
-                       required:false,
-                       width:'100%'"})
-     (build-field
-      {:id "pais"
-       :name "pais"
-       :class "easyui-textbox"
-       :prompt "Pais aqui..."
-       :data-options "label:'Pais:',
-                       labelPosition:'top',
-                       required:false,
-                       width:'100%'"})
-     (build-field
-      {:id "ciudad"
-       :name "ciudad"
-       :class "easyui-textbox"
-       :prompt "Ciudad aqui..."
-       :data-options "label:'Ciudad:',
-                       labelPosition:'top',
-                       required:false,
-                       width:'100%'"})
-     (build-field
       {:id "telefono"
        :name "telefono"
        :class "easyui-textbox"
@@ -96,40 +60,12 @@
        :prompt "Email aqui..."
        :validType "email"
        :data-options "label:'Email:',labelPosition:'top',required:true,width:'100%'"})
-     (build-radio-buttons
-      "Sexo:"
-      (list
-       {:id "sexo_m"
-        :name "sexo"
-        :class "easyui-radiobutton"
-        :value "M"
-        :data-options "label:'Masculino',checked:true"}
-       {:id "sexo_f"
-        :name "sexo"
-        :class "easyui-radiobutton"
-        :value "F"
-        :data-options "label:'Femenino'"}))
-     (build-field
-      {:id "edad"
-       :name "edad"
-       :class "easyui-textbox"
-       :prompt "Edad ej. 20 años"
-       :data-options "label:'Edad:',
-                       labelPosition:'top',
-                       required:false,
-                       width:'100%'"})
      (build-field
       {:id "direccion"
        :name "direccion"
        :class "easyui-textbox"
        :prompt "Domicilio aqui..."
        :data-options "label:'Domicilio:', labelPosition:'top', required:false, width:'100%'"})
-     (build-field
-      {:id "club"
-       :name "club"
-       :class "easyui-textbox"
-       :prompt "Si no pertenece a un club responda 'ninguno'"
-       :data-options "label:'Club:', labelPosition:'top', required:false, width:'100%'"})
      (build-field
       {:id "categoria_id"
        :name "categoria_id"
@@ -166,13 +102,8 @@
      [:td (swap! cnt inc)]
      [:td (:id row)]
      [:td (:nombre row)]
-     [:td (:apell_paterno row)]
-     [:td (:apell_materno row)]
-     [:td (:pais row)]
-     [:td (:ciudad row)]
      [:td (:telefono row)]
      [:td (:email row)]
-     [:td (:club row)]
      [:td [:input#numero {:name "numero_asignado"
                           :type "textbox"
                           :label ""
@@ -196,13 +127,8 @@
         [:th "#"]
         [:th "ID"]
         [:th "Nombre"]
-        [:th "Apellido Paterno"]
-        [:th "Apellido Materno"]
-        [:th "Pais"]
-        [:th "Ciudad"]
         [:th "Telefono"]
         [:th "Email"]
-        [:th "Club"]
         [:th "No Asignado"]
         [:th "Imprimir"]]]
       [:tbody (map my-body rows)]]]))
