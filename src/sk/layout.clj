@@ -11,7 +11,8 @@
    [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]
    [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]
    [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]
-   [:a.dropdown-item {:href "/admin/limpiar"} "Limpiar Contrareloj"]))
+   [:a.dropdown-item {:href "/admin/limpiar"} "Limpiar Contrareloj"]
+   [:a.dropdown-item {:href "/procesar/lector"} "Procesar Lector->carreras"]))
 
 (defn user-menus []
   [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
@@ -150,6 +151,6 @@
              [:p [:h3 [:a {:href return-url} "Clic aqui para " [:strong "Continuar"]]]]]]]
 
           (app-js)
-          nil]
-         [:footer.bg-secondary.text-center.fixed-bottom
-          [:span  "Copyright &copy" (t/year (t/now)) " PescaSoft - All Rights Reserved"]]))
+          nil
+          [:footer.bg-secondary.text-center.fixed-bottom
+           [:span  "Copyright &copy" (t/year (t/now)) " PescaSoft - All Rights Reserved"]]]))

@@ -4,12 +4,16 @@
             [clojure.string :as st]
             [sk.handlers.creloj.view
              :refer [registrados-view creloj-view creloj-js seconds->duration limpiar-view limpiar-script salidas-view salidas-js llegadas-view llegadas-js]]
-            [sk.handlers.creloj.model :refer [get-oregistered limpiar get-carreras-row]]
+            [sk.handlers.creloj.model :refer [get-oregistered
+                                              limpiar
+                                              get-carreras-row
+                                              get-lector
+                                              process-lector]]
             [sk.models.crud :refer [Update db]]
             [sk.models.util :refer [current_time_internal parse-int]]
             [cheshire.core :refer [generate-string]]
             [sk.layout
-             :refer [application]]
+             :refer [application error-404]]
             [sk.models.util :refer [get-session-id]]))
 
 (defn registrados [_]
@@ -127,6 +131,13 @@
     (if (> (first (seq result)) 0)
       (generate-string {:success "Procesado correctamente!"})
       (generate-string {:error "No se pudo procesar, o numero asignado incorrecto!"}))))
+
+(defn lector-carreras
+  [_]
+  (let [result (doall (process-lector (get-lector)))]
+    (if (seq result)
+      (error-404 "Procesado con exito!" "/display/creloj")
+      (error-404 "No se pudo procesar!" "/display/creloj"))))
 
 (comment
   (remove-non-printable-characters nil)

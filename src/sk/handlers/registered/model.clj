@@ -123,10 +123,11 @@
 (defn create-barcode [id]
   (let [uuid (str (UUID/randomUUID))]
     (copy-file (generate-barcode id) (str temp-dir id ".png"))
-    (str (config :img-url) id ".png?" uuid)))
+    (str (config :img-url) id ".png")))
 ;; End QR
 
 (comment
+  (generate-barcode 175)
   (create-barcode 175)
   (get-carrera-name 1)
   (get-active-carrera-name 5)

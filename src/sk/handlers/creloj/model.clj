@@ -1,5 +1,5 @@
 (ns sk.handlers.creloj.model
-  (:require [sk.models.crud :refer [Query Query! db]]
+  (:require [sk.models.crud :refer [Query Query! Update db]]
             [sk.models.util :refer [current_time_internal]]))
 
 (defn get-active-carrera []
@@ -109,7 +109,39 @@
     row))
 ;; End get-carreras-row
 
+;; Start lector
+(def lector-sql
+  "
+  select
+  lector.id as lector_id,
+  lector.salida as lector_salida,
+  lector.llegada as lector_llegada,
+  carreras.id as carreras_id
+  from lector
+  join carreras on carreras.numero_asignado = lector.numero
+  ")
+
+(defn process-carreras
+  "postear salida y llegada de la table lector a la table carreras"
+  [row]
+  (let [carreras-id (:carreras_id row)
+        prow {:salida (:lector_salida row)
+              :llegada (:lector_llegada row)}
+        result (Update db :carreras prow ["id = ?" carreras-id])]
+    result))
+
+(defn process-lector
+  [rows]
+  (map process-carreras rows))
+
+(defn get-lector
+  []
+  (Query db lector-sql))
+;; End lector
+
 (comment
+  (process-lector (get-lector))
+  (get-lector)
   (get-carreras-row 5 6)
   (limpiar 5)
   (int (Math/floor (/ 3 2)))

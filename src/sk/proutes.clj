@@ -78,4 +78,8 @@
   (GET "/admin/limpiar" req [] (creloj/limpiar-form req))
   (POST "/admin/limpiar" req [] (creloj/limpiar-tiempos req))
   ;; End limpiar
+
+  ;; Start lector
+  (GET "/procesar/lector" req [] (creloj/lector-carreras req))
+  ;; End lector
   )
