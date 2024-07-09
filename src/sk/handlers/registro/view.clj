@@ -228,10 +228,6 @@
          [:td {:colspan 2
                :style table-style} [:strong  "Telefono: "] (:telefono row)]]
         [:tr
-         [:td {:style table-style} [:strong "Ciudad: "] (:ciudad row)]
-         [:td {:style table-style} [:strong "Club: "] (:club row)]
-         [:td {:style table-style} [:strong "Sexo: "] (:sexo row)]]
-        [:tr
          [:td {:colspan 3
                :style table-style} [:strong "Email: "] (:email row)]]
         [:tr
@@ -293,4 +289,5 @@
 ;; End registered view
 
 (comment
+  (build-html 410)
   (registro-view))
