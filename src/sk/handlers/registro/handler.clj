@@ -101,6 +101,7 @@
 ;; End registrar
 
 (comment
+  (build-html 17)
   (email-body {:params {:id nil
                         :nombre "Hector"
                         :apell_paterno "Lucero"
