@@ -11,6 +11,7 @@
                      get-registered
                      get-oregistered
                      get-register-row
+                     get-carreras
                      create-barcode]]))
 
 ;; Start registrados
@@ -187,27 +188,29 @@
 
 ;; Start update-number-view
 (defn update-number-view [carrera_id]
-  (list
-   [:div.easyui-panel {:title "Actualizar numero asignado"
-                       :style "width:100%;max-width:400px;padding:30px 60px;"}
-    [:form {:id "uform"
-            :method "post"
-            :action "/update/number"}
-     (anti-forgery-field)
-     [:input {:type "hidden"
-              :name "id"
-              :value carrera_id}]
-     [:div {:style "margin-bottom:20px;"}
-      [:input.easyui-textbox {:id "numero_asignado"
-                              :name "numero_asignado"
-                              :style "width:100%"
-                              :prompt "Numero aqui..."
-                              :data-options "label:'Numero:',required:true"}]]]
+  (let [row (get-carreras carrera_id)
+        nombre (str (:nombre row) " " (:apell_paterno row) " " (:apell_materno row))]
+    (list
+     [:div.easyui-panel {:title (str "Actualizar numero asignado de: " nombre)
+                         :style "width:100%;max-width:400px;padding:30px 60px;"}
+      [:form {:id "uform"
+              :method "post"
+              :action "/update/number"}
+       (anti-forgery-field)
+       [:input {:type "hidden"
+                :name "id"
+                :value carrera_id}]
+       [:div {:style "margin-bottom:20px;"}
+        [:input.easyui-textbox {:id "numero_asignado"
+                                :name "numero_asignado"
+                                :style "width:100%"
+                                :prompt "Numero aqui..."
+                                :data-options "label:'Numero:',required:true"}]]]
 
-    [:div {:style "text-align:center;padding:5px 0"}
-     [:a#submit.easyui-linkbutton {:href "javascript:void(0)"
-                                   :onclick "submitForm()"
-                                   :style "width:80px;"} "Procesar"]]]))
+      [:div {:style "text-align:center;padding:5px 0"}
+       [:a#submit.easyui-linkbutton {:href "javascript:void(0)"
+                                     :onclick "submitForm()"
+                                     :style "width:80px;"} "Procesar"]]])))
 
 (defn update-number-script []
   [:script

@@ -124,9 +124,13 @@
   (let [uuid (str (UUID/randomUUID))]
     (copy-file (generate-barcode id) (str temp-dir id ".png"))
     (str (config :img-url) id ".png")))
+
+(defn get-carreras [carrera-id]
+  (first (Query db ["select * from carreras where id = ?" carrera-id])))
 ;; End QR
 
 (comment
+  (get-carreras 416)
   (generate-barcode 175)
   (create-barcode 175)
   (get-carrera-name 1)
