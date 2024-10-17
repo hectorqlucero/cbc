@@ -1,79 +1,69 @@
 (ns sk.handlers.admin.mensajes.view
-  (:require [hiccup.page :refer [include-js]]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.util :refer [build-dialog build-field build-radio-buttons build-table build-toolbar]]))
-
-(def dialog-fields
-  (list
-   [:input {:type "hidden" :id "id" :name "id"}]
-   (build-field
-    {:id "carrera_id"
-     :name "carrera_id"
-     :class "easyui-combobox"
-     :data-options "label:'Carrera:',
-                    labelPosition:'top',
-                    url:'/admin/carrera/carreras',
-                    method:'GET',
-                    required:true,
-                    width:'100%'"})
-   (build-field
-    {:id "registrar_mensaje"
-     :name "registrar_mensaje"
-     :class "easyui-textbox"
-     :prompt "El mensaje que aparecera despues de precionar el boton de registrar"
-     :data-options "label:'Registrar Mensaje:',
-                 labelPosition:'top',
-                 required:true,
-                 multiline:true,
-                 width:'100%',
-                 height:120"})
-   (build-field
-    {:id "correo_mensaje"
-     :name "correo_mensaje"
-     :class "easyui-textbox"
-     :prompt "Este mensaje aparecera en el correo del corredor"
-     :data-options "label:'Correo Mensaje:',
-                 labelPosition:'top',
-                 required:true,
-                 multiline:true,
-                 width:'100%',
-                 height:120"})))
+  (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.models.form :refer [form build-hidden-field build-field build-select build-radio build-modal-buttons build-textarea]]
+            [sk.handlers.admin.mensajes.model :refer [carreras-options]]
+            [sk.models.grid :refer [build-grid build-modal modal-script]]))
 
 (defn mensajes-view
-  "Esto crea el grid y la forma en una ventana"
-  [title]
-  (list
-   (anti-forgery-field)
-   (build-table
-    title
-    "/admin/mensajes"
-    (list
-     [:th {:data-options "field:'id',sortable:true,fixed:false"} "ID"]
-     [:th {:data-options "field:'carrera_id',sortable:true,fixed:false"
-           :formatter "carreraName"} "Carrera"]
-     [:th {:data-options "field:'registrar_mensaje',sortable:true,width:33"} "Registrar Mensaje"]
-     [:th {:data-options "field:'correo_mensaje',sortable:true,width:33"} "Correo Mensaje"]))
-   (build-toolbar)
-   (build-dialog title dialog-fields)))
+  [title rows]
+  (let [labels ["CARRERA" "ACTIVA?"]
+        db-fields [:carrera_id_formatted :activa]
+        fields (zipmap db-fields labels)
+        table-id "mensajes_table"
+        args {:new true :edit true :delete true}
+        href "/admin/mensajes"]
+    (build-grid title rows table-id fields href args)))
 
-(defn mensajes-scripts
-  "Esto crea el javascript necesario"
-  []
+(defn build-mensajes-fields
+  [row]
   (list
-   (include-js "/js/grid.js")
-   [:script
-    "function carreraName(val, row, index) {
-        var result = null;
-        var scriptUrl = '/table_ref/get-carrera-name/' + val;
-        $.ajax({
-          url: scriptUrl,
-          type: 'get',
-          dataType: 'html',
-          async: false,
-          success: function(data) {
-            result = data;
-          }
-        });
-        return result;
-      }
-      "]))
+   (build-hidden-field {:id "id"
+                        :name "id"
+                        :value (:id row)})
+   (build-select {:label "Carrera"
+                  :id "carrera_id"
+                  :name "carrera_id"
+                  :required true
+                  :value (:carrera_id row)
+                  :options (carreras-options)})
+   (build-textarea {:label "Registrar Mensaje"
+                    :id "registrar_mensaje"
+                    :name "registrar_mensaje"
+                    :rows "6"
+                    :placeholder "registrar_mensaje aqui..."
+                    :required false
+                    :value (:registrar_mensaje row)})
+   (build-textarea {:label "Correo Mensaje"
+                    :id "correo_mensaje"
+                    :name "correo_mensaje"
+                    :rows "18"
+                    :placeholder "correo_mensaje aqui..."
+                    :required false
+                    :value (:correo_mensaje row)})))
+
+(defn build-mensajes-form
+  [title row]
+  (let [fields (build-mensajes-fields row)
+        href "/admin/mensajes/save"
+        buttons (build-modal-buttons)]
+    (form href fields buttons)))
+
+(defn build-mensajes-modal
+  [title row]
+  (build-modal title row (build-mensajes-form title row)))
+
+(defn mensajes-edit-view
+  [title row rows]
+  (list
+   (mensajes-view "mensajes Manteniento" rows)
+   (build-mensajes-modal title row)))
+
+(defn mensajes-add-view
+  [title row rows]
+  (list
+   (mensajes-view "mensajes Mantenimiento" rows)
+   (build-mensajes-modal title row)))
+
+(defn mensajes-modal-script
+  []
+  (modal-script))

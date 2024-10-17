@@ -1,60 +1,63 @@
 (ns sk.handlers.admin.categorias.view
-  (:require [hiccup.page :refer [include-js]]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.util :refer [build-dialog build-field build-radio-buttons build-table build-toolbar]]))
+  (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.models.form :refer [form build-hidden-field build-field build-select build-radio build-modal-buttons build-textarea]]
+            [sk.handlers.admin.categorias.model :refer [carreras-options]]
+            [sk.models.grid :refer [build-grid build-modal modal-script]]))
 
-(def dialog-fields
-  (list
-   [:input {:type "hidden" :id "id" :name "id"}]
-   (build-field
-    {:id "carrera_id"
-     :name "carrera_id"
-     :class "easyui-combobox"
-     :data-options "label:'Carrera:',
-                    labelPosition:'top',
-                    url:'/admin/carrera/carreras',
-                    method:'GET',
-                    required:true,
-                    width:'100%'"})
-   (build-field
-    {:id "descripcion"
-     :name "descripcion"
-     :class "easyui-textbox"
-     :data-options "label:'Descripción:',
-                     labelPosition:'top',
-                     width:'100%',
-                     required:true"})))
+(defn categorias-view
+  [title rows]
+  (let [labels ["CARRERA" "CATEGORIA"]
+        db-fields [:carrera_id_formatted :descripcion]
+        fields (zipmap db-fields labels)
+        table-id "categorias_table"
+        args {:new true :edit true :delete true}
+        href "/admin/categorias"]
+    (build-grid title rows table-id fields href args)))
 
-(defn categorias-view [title]
+(defn build-categorias-fields
+  [row]
   (list
-   (anti-forgery-field)
-   (build-table
-    title
-    "/admin/categorias"
-    (list
-     [:th {:data-options "field:'id',sortable:true,fixed:false"} "ID"]
-     [:th {:data-options "field:'carrera_id',sortable:true,fixed:false"
-           :formatter "carreraName"} "Carrera"]
-     [:th {:data-options "field:'descripcion',sortable:true,fixed:false"} "Categoria"]))
-   (build-toolbar)
-   (build-dialog title dialog-fields)))
+   (build-hidden-field {:id "id"
+                        :name "id"
+                        :value (:id row)})
+   (build-select {:label "Carrera"
+                  :id "carrera_id"
+                  :name "carrera_id"
+                  :required true
+                  :error "La carrera es requerida..."
+                  :value (:carrera_id row)
+                  :options (carreras-options)})
+   (build-field {:label "Categoria"
+                 :type "text"
+                 :id "descripcion"
+                 :name "descripcion"
+                 :placeholder "descripcion aqui..."
+                 :required true
+                 :value (:descripcion row)})))
 
-(defn categorias-scripts []
+(defn build-categorias-form
+  [title row]
+  (let [fields (build-categorias-fields row)
+        href "/admin/categorias/save"
+        buttons (build-modal-buttons)]
+    (form href fields buttons)))
+
+(defn build-categorias-modal
+  [title row]
+  (build-modal title row (build-categorias-form title row)))
+
+(defn categorias-edit-view
+  [title row rows]
   (list
-   (include-js "/js/grid.js")
-   [:script
-    "function carreraName(val, row, index) {
-        var result = null;
-        var scriptUrl = '/table_ref/get-carrera-name/' + val;
-        $.ajax({
-          url: scriptUrl,
-          type: 'get',
-          dataType: 'html',
-          async: false,
-          success: function(data) {
-            result = data;
-          }
-        });
-        return result;
-      }
-      "]))
+   (categorias-view "categorias Manteniento" rows)
+   (build-categorias-modal title row)))
+
+(defn categorias-add-view
+  [title row rows]
+  (list
+   (categorias-view "categorias Mantenimiento" rows)
+   (build-categorias-modal title row)))
+
+(defn categorias-modal-script
+  []
+  (modal-script))

@@ -1,5 +1,5 @@
 (ns sk.handlers.eventos.view
-  (:require [sk.models.crud :refer [config]]))
+  (:require [sk.migrations :refer [config]]))
 
 (defn build-options [month-name year month]
   {:width   152
@@ -10,56 +10,56 @@
 
 (defn eventos-view [title year]
   (list
-   [:section.p-5.bg-secondary
+   [:section.p-5.bg-light
     [:div.container
      [:h2.text-center.text-secondary title]
      [:div.row.g-4
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "enero" year 1)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "febrero" year 2)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "marzo" year 3)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "abril" year 4)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "mayo" year 5)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "junio" year 6)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "julio" year 7)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "agosto" year 8)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "septiembre" year 9)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "octubre" year 10)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "noviembre" year 11)]]]]
       [:div.col-md-6.col-lg-3
-       [:div.card.bg-secondary
+       [:div.card.bg-light
         [:div.card-body.text-center
          [:img.rounded-circle.mb-3 (build-options "diciembre" year 12)]]]]]]]))
 

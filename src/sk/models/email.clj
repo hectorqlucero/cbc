@@ -1,6 +1,6 @@
 (ns sk.models.email
   (:require [postal.core :refer [send-message]]
-            [sk.models.crud :refer [config]]))
+            [sk.migrations :refer [config]]))
 
 ;;(send-message {:host "email-host"
 ;;               :user "email-user"
@@ -36,12 +36,14 @@
    :ssl  true})
 
 (def body
-  {:from    "marcopescador@lucero-systems.cf"
+  {:from    "ciclismobc@fastmail.com"
    :to      "hectorqlucero@gmail.com"
    :subject "Hi!"
    :body    [{:type    "text/html;charset=utf-8"
               :content "<b>Testing</b>"}]})
+
 (defn send-email [host body]
   (send-message host body))
 
-;;(send-email host body)
+(comment
+  (send-email host body))

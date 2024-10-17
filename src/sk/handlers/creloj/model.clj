@@ -139,7 +139,15 @@
   (Query db lector-sql))
 ;; End lector
 
+(defn carreras-options
+  []
+  (let [rows (Query db ["select id as value,descripcion as label from carrera order by descripcion"])]
+    (list* {:value ""
+            :label "Seleccionar carrera!"}
+           rows)))
+
 (comment
+  (carreras-options)
   (process-lector (get-lector))
   (get-lector)
   (get-carreras-row 5 6)

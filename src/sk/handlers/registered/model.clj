@@ -1,5 +1,6 @@
 (ns sk.handlers.registered.model
-  (:require [sk.models.crud :refer [Query db config]]
+  (:require [sk.models.crud :refer [Query db]]
+            [sk.migrations :refer [config]]
             [clojure.java.io :as io]
             [clj.qrgen :refer [as-file from]])
   (:import java.text.SimpleDateFormat
@@ -10,15 +11,16 @@
 
 (def registered-sql
   "
-   select * 
-   from carreras 
-   where carrera_id = ?
-   order by
-   categoria_id,
-   nombre,
-   apell_paterno,
-   apell_materno
-   ")
+  select *,
+  ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
+  from carreras 
+  where carrera_id = ?
+  order by
+  categoria_id,
+  nombre,
+  apell_paterno,
+  apell_materno
+  ")
 
 (def oregistered-sql
   "
@@ -123,13 +125,32 @@
 (defn create-barcode [id]
   (let [uuid (str (UUID/randomUUID))]
     (copy-file (generate-barcode id) (str temp-dir id ".png"))
-    (str (config :img-url) id ".png")))
+    (str (config :barcode-url) id ".png")))
 
 (defn get-carreras [carrera-id]
   (first (Query db ["select * from carreras where id = ?" carrera-id])))
 ;; End QR
 
+(defn get-active-carrera-id []
+  (:id (first (Query db ["select id from carrera where activa = 'S'"]))))
+
+; Start get-corredor-by-numero
+(def get-corredor-by-numero-sql
+  "
+  select *
+  from carreras
+  where
+  carrera_id = ?
+  and numero_asignado = ?
+  ")
+
+(defn get-corredor-by-numero [carrera-id numero]
+  (first (Query db [get-corredor-by-numero-sql carrera-id numero])))
+;; End get-corredor-by-numero
+
 (comment
+  (get-corredor-by-numero (get-active-carrera-id) 704)
+  (get-active-carrera-id)
   (get-carreras 416)
   (generate-barcode 175)
   (create-barcode 175)

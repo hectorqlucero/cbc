@@ -1,13 +1,18 @@
 (ns sk.handlers.registered.view
   (:require [hiccup.page :refer [html5]]
-            [sk.models.crud :refer [config]]
+            [sk.migrations :refer [config]]
             [pdfkit-clj.core :refer [as-stream gen-pdf]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.util :refer [parse-int zpl]]
-            [sk.handlers.creloj.view :refer [seconds->duration]]
+            [sk.models.util :refer [parse-int
+                                    zpl
+                                    seconds->duration]]
+            [sk.models.form :refer [build-form
+                                    build-submit-button
+                                    build-field]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
             [sk.handlers.registered.model
              :refer [get-active-carrera-name
+                     get-categoria
                      get-registered
                      get-oregistered
                      get-register-row
@@ -24,7 +29,7 @@
 
 (defn registrados-view []
   (list
-   [:table.table-secondary.table-hover {:style "width:100%;height:auto;"}
+   [:table.table.table-secondary.table-hover {:style "width:100%;height:auto;"}
     [:caption.table-info "Seleccione la carrera o paseo al cual desea ver los registrados"]
     [:thead.table-info
      [:tr
@@ -44,7 +49,7 @@
 
 (defn oregistrados-view []
   (list
-   [:table.table-secondary.table-hover {:style "width:100%;height:auto;"}
+   [:table.table.table-secondary.table-hover {:style "width:100%;height:auto;"}
     [:caption.table-info "Seleccione la carrera o paseo al cual desea ver los registrados"]
     [:thead.table-info
      [:tr
@@ -59,7 +64,9 @@
 ;; Start registered-view
 (defn my-body [row]
   (let [button-path (str "'" "/imprimir/registered/" (:id row) "'")
-        comando (str "location.href = " button-path)]
+        comando (str "location.href = " button-path)
+        cert-path (str "/cert/registered/" (:id row))
+        cert-comando (str "location.href = " cert-path)]
     [:tr
      [:td (swap! cnt inc)]
      [:td (:id row)]
@@ -73,9 +80,12 @@
                           :prompt "No asignado aqui..."
                           :value (:numero_asignado row)
                           :onblur (str "postValue(" (:id row) ", this.value)")}]]
-     [:td [:button.btn.btn-outline-primary.c6 {:type "button"
-                                               :onclick comando
-                                               :target "_blank"} "Registro"]]]))
+     [:td [:button.btn.btn-outline-primary {:type "button"
+                                            :onclick comando
+                                            :target "_blank"} "Registro"]]
+     [:td [:a.btn.btn-outline-primary {:role "button"
+                                       :href cert-path
+                                       :target "_blank"} "Certificado"]]]))
 
 (defn registered-view [carrera_id]
   (let [rows (get-oregistered carrera_id)
@@ -94,7 +104,8 @@
         [:th "Email"]
         [:th "Categoria"]
         [:th "No Asignado"]
-        [:th "Imprimir"]]]
+        [:th "Imprimir"]
+        [:th "Cert"]]]
       [:tbody (map my-body rows)]]]))
 ;; End registered-view
 
@@ -191,56 +202,41 @@
   (let [row (get-carreras carrera_id)
         nombre (str (:nombre row) " " (:apell_paterno row) " " (:apell_materno row))]
     (list
-     [:div.easyui-panel {:title (str "Actualizar numero asignado de: " nombre)
-                         :style "width:100%;max-width:400px;padding:30px 60px;"}
+     [:div.container {:title (str "Actualizar numero asignado de: " nombre)
+                      :style "width:100%;max-width:400px;padding:30px 60px;"}
       [:form {:id "uform"
               :method "post"
               :action "/update/number"}
+       [:legend nombre]
        (anti-forgery-field)
        [:input {:type "hidden"
                 :name "id"
                 :value carrera_id}]
        [:div {:style "margin-bottom:20px;"}
-        [:input.easyui-textbox {:id "numero_asignado"
-                                :name "numero_asignado"
-                                :style "width:100%"
-                                :prompt "Numero aqui..."
-                                :data-options "label:'Numero:',required:true"}]]]
+        [:input {:id "numero_asignado"
+                 :name "numero_asignado"
+                 :style "width:100%"
+                 :prompt "Numero aqui..."
+                 :value ""
+                 :data-options "label:'Numero:',required:true"}]]]
 
       [:div {:style "text-align:center;padding:5px 0"}
-       [:a#submit.easyui-linkbutton {:href "javascript:void(0)"
-                                     :onclick "submitForm()"
-                                     :style "width:80px;"} "Procesar"]]])))
+       [:button#submit_button.btn.btn-primary {:type "button"
+                                               :onClick "submitForm()"
+                                               :style "width:80px;"} "Procesar"]]])))
 
 (defn update-number-script []
   [:script
    "
-   function submitForm(){
-    $('#uform').form('submit', {
-      onSubmit: function() {
-        if($(this).form('validate')) {
-          $('a#submit').linkbutton('disable');
-        }
-        return $(this).form('validate');
-      },
-      success: function(result) {
-        var json = JSON.parse(result);
-        if(json.error) {
-          $.messager.alert({
-            title: 'Error',
-            msg: json.error
-          });
-          $('a#submit').linkbutton('enable');
-        } else {
-          $.messager.alert({
-            title: 'Exito',
-            msg: json.success,
-            fn: function() {
-              window.location.href = '/';
-            }
-          });
-        }
+   function submitForm() {
+    $.post('/update/number',$('#uform').serialize(),function(data) {
+      var message = JSON.parse(data);
+      if(message.error) {
+        alert(message.error);
+      } else {
+        alert(message.success);
       }
+      $('#numero_asignado').val('');
     });
    }
    "])
@@ -259,15 +255,51 @@
   [:script
    (str "function postValue(id,no) {
          $.get('/update/registered/'+id+'/'+no, function(data) {
-           var dta = JSON.parse(data);
-           $.messager.show({
-             title: 'Estatus',
-             msg: dta.message
-           })
+           var mensaje = JSON.parse(data);
+           alert(mensaje.message);
          })
    }")])
 
+(defn build-cert-html [id row]
+  (let [rider (:nombre row)
+        categoria (get-categoria (:categoria_id row))
+        tiempo (seconds->duration (:tiempo row))]
+    (html5
+     [:div {:style "position: relative;text-align:center;color:white;"}
+      [:img {:src "http://localhost:3000//images/cert.jpg"
+             :alt "cert"
+             :style "width:100%"}]
+      [:div {:style "color:black;font-weight:900;font-size:1.87em;position:absolute;top:50%;left:10%;"} rider]
+      [:div {:style "color:black;font-weight:900;font-size:1.5em;position:absolute;top:59%;left:50%;transform:translate(-59%, -50%"} categoria]
+      [:div {:style "color:black;font-weight:900;font-size:1em;position:absolute;top:67%;left:11%;"} tiempo]])))
+
+(defn cert-view [id]
+  (let [row (get-register-row id)
+        filename (str "cert_" id ".pdf")
+        html (build-cert-html id row)]
+    {:headers {"Content-Type" "application/pdf"
+               "Content-Disposition" (str "attachment;filename=" filename)
+               "Cache-Control" "no-cache,no-store,max-age=0,must-revalidate,pre-check=0,post-check=0"}
+     :body (as-stream (gen-pdf html
+                               :margin {:top 20 :right 15 :bottom 50 :left 15}))}))
+;; End cert-view
+
+;; Start imprimir-cert
+(defn imprimir-cert-view
+  [title]
+  (list
+   (build-form
+    title
+    "/imprimir/cert"
+    (build-field {:label "Numero Asignado"
+                  :id "numero_asignado"
+                  :name "numero_asignado"
+                  :value ""})
+    (build-submit-button {:label "Generar Certificado"}))))
+
+;; end imprimir-cert
 (comment
+  (imprimir-cert-view "testing")
   (create-barcode 175)
   (build-html 175)
   (get-registered 175)

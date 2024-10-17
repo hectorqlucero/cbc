@@ -70,7 +70,26 @@
 
 (defn get-register-row [carrera_id]
   (first (Query db [register-row-sql carrera_id])))
+
+;; start categoria-options
+(def categoria-options-sql
+  "
+  select id as value,
+  descripcion as label
+  from categorias
+  where carrera_id = ?
+  order by descripcion
+  ")
+
+(defn categoria-options
+  [carrera-id]
+  (let [options (Query db [categoria-options-sql carrera-id])]
+    (list* {:label "Seleccionar categoria"
+            :value ""} options)))
+;; end categoria-options
+
 (comment
+  (categoria-options 2)
   (get-active-carreras)
   (get-active-carrera-name 2)
   (registrar-mensaje 1)

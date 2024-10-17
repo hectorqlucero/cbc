@@ -2,10 +2,18 @@
   (:require [hiccup.page :refer [html5]]
             [sk.handlers.registro.model :refer [get-active-carreras]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.util :refer [build-form build-field build-button parse-int current_time]]
+            [sk.models.form :refer [build-form
+                                    build-select]]
+            [sk.models.util :refer [build-field
+                                    build-button
+                                    parse-int
+                                    current_time]]
             [clojure.string :as string]
             [sk.handlers.creloj.model
-             :refer [get-active-carrera-name get-oregistered get-register-row]]))
+             :refer [get-active-carrera-name
+                     get-oregistered
+                     get-register-row
+                     carreras-options]]))
 
 ;; Start format seconds->duration
 (def seconds-in-minute 60)
@@ -14,7 +22,8 @@
 (def seconds-in-week (* 7 seconds-in-day))
 
 (defn seconds->duration [seconds]
-  (let [weeks   ((juxt quot rem) seconds seconds-in-week)
+  (let [seconds (or seconds 0)
+        weeks   ((juxt quot rem) seconds seconds-in-week)
         wk      (first weeks)
         days    ((juxt quot rem) (last weeks) seconds-in-day)
         d       (first days)
@@ -47,7 +56,7 @@
                                :href lref} "Llegadas"]]]))
 (defn registrados-view []
   (list
-   [:table.table-secondary.table-hover {:style "width:100%;height:auto;"}
+   [:table.table.table-secondary.table-hover {:style "width:100%;height:auto;"}
     [:caption.table-info "Seleccione la carrera o paseo al cual desea ver los corredores. Nota: Necesita tener un numero asignado!!!"]
     [:thead.table-info
      [:tr
@@ -110,26 +119,18 @@
 ;; End tiempo-view
 
 ;; Start limpiar
-(defn limpiar-view []
+(defn limpiar-view [title]
   (build-form
-   "Limpiar Contrareloj"
-   (anti-forgery-field)
-   (build-field
-    {:id "id"
+   title
+   ""
+   (build-select
+    {:label "Carrera"
+     :id "id"
      :name "id"
-     :class "easyui-combobox"
-     :data-options "label:'Carrera:',
-                     labelPosition:'top',
-                     url:'/table_ref/get-carreras',
-                     method:'GET',
-                     required:true,
-                     width:'100%'"})
-   (build-button
-    {:href "javascript:void(0)"
-     :id "submit"
-     :text "Limpiar"
-     :class "easyui-linkbutton c6"
-     :onClick "submitForm()"})))
+     :value ""
+     :options (carreras-options)})
+   [:button.bnt.btn-primary {:id "submit"
+                             :onclick "submitForm()"} "Limpiar"]))
 
 (defn limpiar-script []
   [:script
@@ -138,8 +139,8 @@
         $('.fm').form('submit', {
             onSubmit:function() {
                 if($(this).form('validate')) {
-                  $('a#submit').linkbutton('disable');
-                  $('a#submit').linkbutton({text: 'Processando!'});
+                  $('#submit').prop('disabled',true);
+                  $('#submit').html('Procesando!');
                 }
                 return $(this).form('enableValidation').form('validate');
             },
@@ -147,14 +148,12 @@
                 try {
                     var dta = JSON.parse(data);
                     if(dta.hasOwnProperty('url')) {
+                        alert(dta.url);
                         window.location.href = dta.url;
                     } else if(dta.hasOwnProperty('error')) {
-                        $.messager.show({
-                            title: 'Error: ',
-                            msg: dta.error
-                        });
-                        $('a#submit').linkbutton('enable');
-                        $('a#submit').linkbutton({text: 'Limpiar'});
+                        alert(dta.error);
+                        $('#submit').prop('disabled',true);
+                        $('#submit').html('Limpiar');
                     }
                 } catch(e) {
                     console.error('Invalid JSON');
@@ -173,10 +172,7 @@
     function salida(id) {
       $.get('/update/salida/'+id, function(data) {
         var dta = JSON.parse(data);
-        $.messager.show({
-          title: 'Procesado!',
-          msg: dta.message
-        })
+        alert(dta.message);
         window.location.href = '/display/creloj/'+" carrera_id ";
       })
     }
@@ -186,10 +182,7 @@
      let valor = $(llave).val();
      $.get('/change/salida/'+id+'/'+valor, function(data) {
       var dta = JSON.parse(data);
-      $.messager.show({
-       title: 'Procesado!',
-       msg: dta.message
-      })
+      alert(dta.message);
       window.location.href = '/display/creloj/'+" carrera_id ";
      })
     }
@@ -197,10 +190,7 @@
     function llegada(id) {
       $.get('/update/llegada/'+id, function(data) {
         var dta = JSON.parse(data);
-        $.messager.show({
-          title: 'Procesado!',
-          msg: dta.message
-        })
+        alert(dta.message);
         window.location.href = '/display/creloj/'+" carrera_id ";
       })
     }
@@ -210,10 +200,7 @@
      let valor = $(llave).val();
      $.get('/change/llegada/'+id+'/'+valor, function(data) {
       var dta = JSON.parse(data);
-      $.messager.show({
-       title: 'Procesado!',
-       msg: dta.message
-      })
+      alert(dta.message);
       window.location.href = '/display/creloj/'+" carrera_id ";
      })
     }
@@ -243,15 +230,9 @@
       success: function(result) {
         var json = JSON.parse(result);
         if(json.error) {
-          $.messager.show({
-            title: 'Error',
-            msg: json.error
-          });
+          alert(json.error);
         } else {
-          $.messager.show({
-            title: 'Exito',
-            msg: json.success
-          });
+          alert(json.success);
         }
       }
     });
@@ -296,15 +277,9 @@
       success: function(result) {
         var json = JSON.parse(result);
         if(json.error) {
-          $.messager.show({
-            title: 'Error',
-            msg: json.error
-          });
+          alert(json.error);
         } else {
-          $.messager.show({
-            title: 'Exito',
-            msg: json.success
-          });
+          alert(json.success);
         }
       }
     });
