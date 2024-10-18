@@ -2,7 +2,8 @@
   (:require [sk.models.crud :refer [Query db]]
             [sk.models.util :refer [current_year]]
             [sk.migrations :refer [config]]
-            [clojure.string :as st]))
+            [clojure.string :as st])
+  (:import [java.util Calendar UUID]))
 
 (def get-eventos-sql
   (str
@@ -14,9 +15,10 @@ WHERE YEAR(fecha) >= " (current_year) "
 
 (defn get-eventos
   []
-  (let [trows (Query db get-eventos-sql)
+  (let [uuid (str (UUID/randomUUID))
+        trows (Query db get-eventos-sql)
         rows (map (fn [row]
-                    (let [img-url (str (:img-url config) (:imagen row))
+                    (let [img-url (str (:path config) (:imagen row) "?" uuid)
                           img-url (str "<img src=" \" img-url "\" width='95' height='71' alt='evento'>")]
                       (assoc row :imagen img-url))) trows)]
     rows))

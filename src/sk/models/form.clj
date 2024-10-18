@@ -1,6 +1,7 @@
 (ns sk.models.form
   (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.migrations :refer [config]]))
+            [sk.migrations :refer [config]])
+  (:import [java.util Calendar UUID]))
 
 (defn password-form
   [title]
@@ -69,16 +70,17 @@
 
 (defn build-image-field
   [row]
-  (list
-   [:input {:id "file"
-            :name "file"
-            :type "file"}]
-   [:div {:style "float:left;margin-right:2px;"}
-    [:img#image1 {:width "95"
-                  :height "71"
-                  :src (str (:path config) (:imagen row))
-                  :onError "this.src='/images/placeholder_profile.png'"
-                  :style "margin-right:wpx;cursor:pointer;"}]]))
+  (let [uuid (str (UUID/randomUUID))]
+    (list
+     [:input {:id "file"
+              :name "file"
+              :type "file"}]
+     [:div {:style "float:left;margin-right:2px;"}
+      [:img#image1 {:width "95"
+                    :height "71"
+                    :src (str (:path config) (:imagen row) "?" uuid)
+                    :onError "this.src='/images/placeholder_profile.png'"
+                    :style "margin-right:wpx;cursor:pointer;"}]])))
 
 (defn build-image-field-script
   []

@@ -1,5 +1,6 @@
 (ns sk.handlers.eventos.view
-  (:require [sk.migrations :refer [config]]))
+  (:require [sk.migrations :refer [config]])
+  (:import [java.util Calendar UUID]))
 
 (defn build-options [month-name year month]
   {:width   152
@@ -80,17 +81,18 @@
    [:div.col-xs.8.col-sm-8.col-md-9.col-lg-10 value]])
 
 (defn body-rr [row]
-  [:h2 (:descripcion_corta row)
-   [:div.card
-    [:div.card-body {:style "font-size:.5em;"}
-     (line-rr nil [:img.card-img-top.mb-3.w-auto {:src (str (:img-url config) (:imagen row))
-                                                  :style "max-width:100%;height:auto;"
-                                                  :onError "this.src='/images/placeholder_profile.png'"}])
-     (line-rr "Fecha:" (:f_fecha row))
-     (line-rr "Detalles: " (:descripcion row))
-     (line-rr "Lugar: " (:punto_reunion row))
-     (line-rr "Hora: " (:hora row))
-     (line-rr "Organiza: " (:leader row))]]])
+  (let [uuid (str (UUID/randomUUID))]
+    [:h2 (:descripcion_corta row)
+     [:div.card
+      [:div.card-body {:style "font-size:.5em;"}
+       (line-rr nil [:img.card-img-top.mb-3.w-auto {:src (str (:path config) (:imagen row) "?" uuid)
+                                                    :style "max-width:100%;height:auto;"
+                                                    :onError "this.src='/images/placeholder_profile.png'"}])
+       (line-rr "Fecha:" (:f_fecha row))
+       (line-rr "Detalles: " (:descripcion row))
+       (line-rr "Lugar: " (:punto_reunion row))
+       (line-rr "Hora: " (:hora row))
+       (line-rr "Organiza: " (:leader row))]]]))
 
 (defn display-eventos-view [title _ _ rows _]
   (list
