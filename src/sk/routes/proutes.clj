@@ -10,7 +10,7 @@
             [sk.handlers.creloj.controller :as creloj-controller]))
 
 (defroutes proutes
-  (GET "/admin/users" params users-controller/users)
+  (GET "/admin/users" params [] (users-controller/users params))
   (GET "/admin/users/edit/:id" [id] (users-controller/users-edit id))
   (POST "/admin/users/save" params [] (users-controller/users-save params))
   (GET "/admin/users/add" params [] (users-controller/users-add params))
