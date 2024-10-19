@@ -1,5 +1,5 @@
 (ns sk.handlers.eventos.model
-  (:require [sk.models.crud :refer [Query db]]
+  (:require [sk.models.crud :refer [Query Query! db]]
             [clojure.string :as st]))
 
 (def get-eventos-sql
@@ -26,6 +26,7 @@
 
 (defn get-eventos
   [year month]
+  (Query! db "SET GLOBAL lc_time_names = 'es_MX';")
   (Query db [get-eventos-sql year month]))
 
 (def get-eventos-id-sql
