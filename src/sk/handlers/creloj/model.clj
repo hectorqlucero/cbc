@@ -113,12 +113,12 @@
 (def lector-sql
   "
   select
-  lector.id as lector_id,
-  lector.salida as lector_salida,
-  lector.llegada as lector_llegada,
+  pos_items.OID as lector_id,
+  pos_items.checkin_dt as lector_salida,
+  pos_items.checkout_dt as lector_llegada,
   carreras.id as carreras_id
-  from lector
-  join carreras on carreras.numero_asignado = lector.numero
+  from pos_items
+  join carreras on carreras.numero_asignado = pos_items.name
   ")
 
 (defn process-carreras
