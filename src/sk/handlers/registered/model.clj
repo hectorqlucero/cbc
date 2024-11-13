@@ -43,7 +43,7 @@
    TIME_FORMAT(llegada,'%H:%i:%s') as hora_llegada,
    salida,
    llegada,
-   ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
+   TIMESTAMPDIFF(SECOND,salida,llegada) as tiempo
    from carreras 
    where carrera_id = ?
    order by
@@ -77,6 +77,7 @@
   "
    select
    carreras.id,
+   TIMESTAMPDIFF(SECOND,carreras.salida,carreras.llegada) as tiempo,
    carreras.nombre,
    carreras.apell_paterno,
    carreras.apell_materno,
@@ -151,7 +152,7 @@
 (comment
   (get-corredor-by-numero (get-active-carrera-id) 704)
   (get-active-carrera-id)
-  (get-carreras 416)
+  (get-carreras 415)
   (generate-barcode 175)
   (create-barcode 175)
   (get-carrera-name 1)
@@ -159,4 +160,4 @@
   (get-registered 5)
   (get-oregistered 5)
   (get-categoria 20)
-  (get-register-row 1))
+  (get-register-row 415))

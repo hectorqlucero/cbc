@@ -266,7 +266,7 @@
         tiempo (seconds->duration (:tiempo row))]
     (html5
      [:div {:style "position: relative;text-align:center;color:white;"}
-      [:img {:src "http://localhost:3000//images/cert.jpg"
+      [:img {:src "http://localhost:3000/uploads/cert.jpg"
              :alt "cert"
              :style "width:100%"}]
       [:div {:style "color:black;font-weight:900;font-size:1.87em;position:absolute;top:50%;left:10%;"} rider]
