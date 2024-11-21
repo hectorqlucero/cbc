@@ -39,7 +39,7 @@
 
 ;; Start registrar view
 (defn registrar-fields
-  [carrera-id]
+  [carrera-id extra]
   (list
    (build-hidden-field {:id "id"
                         :name "id"})
@@ -73,13 +73,19 @@
    (build-select {:label "Categoria"
                   :id "categoria_id"
                   :name "categoria_id"
-                  :options (categoria-options carrera-id)})))
+                  :options (categoria-options carrera-id)})
+   (when (> extra 0)
+     (build-field {:label "Numero Asignado"
+                   :type "text"
+                   :id "numero_asignado"
+                   :name "numero_asignado"
+                   :prompt "Numero asignado aqui..."}))))
 
 (defn registrar-view
-  [title carrera-id]
+  [title carrera-id extra]
   (let [title (str "Registrarse - " title)
         href (str "/registrar/save")
-        fields (registrar-fields carrera-id)
+        fields (registrar-fields carrera-id extra)
         buttons (build-submit-button {:label "Registrar"})]
     (build-form title href fields buttons)))
 ;; End registrar view

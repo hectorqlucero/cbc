@@ -31,7 +31,8 @@
   [carrera-id]
   (let [title (get-active-carrera-name carrera-id)
         ok -1
-        content (registrar-view title carrera-id)]
+        extra (get-session-id)
+        content (registrar-view title carrera-id extra)]
     (application title ok nil content)))
 
 ;; start registrar-save
