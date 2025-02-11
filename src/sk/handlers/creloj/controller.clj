@@ -11,7 +11,8 @@
                      salidas-view
                      salidas-js
                      llegadas-view
-                     llegadas-js]]
+                     llegadas-js
+                     current-time]]
             [sk.handlers.creloj.model :refer [get-oregistered
                                               limpiar
                                               get-carreras-row
@@ -24,6 +25,9 @@
             [sk.layout
              :refer [application error-404]]
             [sk.models.util :refer [get-session-id]]))
+
+(defn get-time []
+  (current-time))
 
 (defn registrados [_]
   (let [title "Corredores Registrados"

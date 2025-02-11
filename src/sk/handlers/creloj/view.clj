@@ -13,7 +13,10 @@
              :refer [get-active-carrera-name
                      get-oregistered
                      get-register-row
-                     carreras-options]]))
+                     get-carreras-by-id
+                     carreras-options]]
+            [java-time :as jt]))
+
 
 ;; Start format seconds->duration
 (def seconds-in-minute 60)
@@ -209,19 +212,46 @@
 
 ;; Start salidas
 (defn salidas-view [carrera_id]
-  [:div.container
-   [:div.row {:style "width:200px;border:1px; solid black;background:white;"}
-    [:div.col-sm
-     [:h1 "SALIDAS"]
-     [:div#runningTime]
-     [:hr]
-     [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
-     [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
-                               :onclick "procesar()"} "Salir"]]]])
+  (let [rows (get-carreras-by-id carrera_id)]
+    [:div.container
+     [:div.row
+      [:div.col-md-3
+       [:h1 "SALIDAS"]
+       [:div#runningTime]
+       [:h2#clock "Loading..."]
+       [:hr]
+       [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
+       [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
+                                 :onclick "procesar()"} "Salir"]]
+      [:div.col-md-6
+       [:h2 "Corredores"]
+       [:table.table.table-sm.table-bordered
+        [:thead
+         [:tr
+          [:td "#NUM"]
+          [:td "CORREDOR"]
+          [:td "SALIDA"]]]
+        [:tbody
+         (for [row rows]
+           [:tr
+            [:td (:numero_asignado row)]
+            [:td (str (:nombre row) " " (:apell_paterno row) " " (:apell_materno row))]
+            [:td (:salida row)]])]]]]]))
+
+(defn current-time []
+  (jt/format "hh:mm:ss a" (jt/zoned-date-time)))
 
 (defn salidas-js [carrera_id]
   [:script
    "
+    function updateClock() {
+     $.get('/time', function(data) {
+       $('#clock').text(data);
+     });
+    }
+    
+    setInterval(updateClock, 1000);
+
    function procesar() {
     let numero = $('#numero').val();
     $.ajax({
@@ -233,6 +263,7 @@
           alert(json.error);
         } else {
           alert(json.success);
+          location.reload();
         }
       }
     });
@@ -302,6 +333,7 @@
 ;; End llegadas
 
 (comment
+  (current-time)
   (limpiar-view)
   (seconds->duration 7249)
   (get-registered 5)

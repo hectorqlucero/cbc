@@ -146,7 +146,11 @@
             :label "Seleccionar carrera!"}
            rows)))
 
+(defn get-carreras-by-id [carrera-id]
+  (Query db ["select * from carreras where carrera_id = ? order by CAST(numero_asignado AS UNSIGNED), numero_asignado" carrera-id]))
+
 (comment
+  (get-carreras-by-id 14)
   (carreras-options)
   (process-lector (get-lector))
   (get-lector)

@@ -51,6 +51,7 @@
   ;; End display registered
 
   ;; Start creloj
+  (GET "/time" req [] (creloj-controller/get-time))
   (GET "/display/creloj" req [] (creloj-controller/registrados req))
   (GET "/display/creloj/:carrera_id" [carrera_id] (creloj-controller/contra-reloj carrera_id))
   (GET "/display/salidas/:carrera_id" [carrera_id] (creloj-controller/salidas carrera_id))
