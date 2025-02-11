@@ -45,8 +45,7 @@
     [:tr
      [:td (:descripcion row)]
      [:td [:a.btn.btn-primary {:role "button"
-                               :href href} "Registrados"]]
-     [:td "La hora aqui"]]))
+                               :href href} "Registrados"]]]))
 
 (defn oregistrados-view []
   (list
@@ -55,8 +54,7 @@
     [:thead.table-info
      [:tr
       [:th {:field "descripcion" :width "50"} "Carrera/Paseo"]
-      [:th {:width "25"} "Procesar"]
-      [:th {:width "25"} "La hora aqui"]]]
+      [:th {:width "25"} "Procesar"]]]
     [:tbody
      (map obuild-body (get-active-carreras))]]))
 ;; End oregistrados
