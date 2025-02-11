@@ -1,6 +1,6 @@
 (ns sk.handlers.home.controller
   (:require [sk.layout :refer [application error-404]]
-            [sk.handlers.home.view :refer [main-view change-password-view]]
+            [sk.handlers.home.view :refer [main-view change-password-view carousel-view]]
             [noir.response :refer [redirect]]
             [noir.session :as session]
             [noir.util.crypt :as crypt]
@@ -14,9 +14,7 @@
   (let [title "home"
         ok (get-session-id)
         js nil
-        content (if (> (get-session-id) 0)
-                  nil
-                  [:h2.text-primary "clic en Entrar al sitio!"])]
+        content (carousel-view)]
     (application title ok js content)))
 
 (defn login

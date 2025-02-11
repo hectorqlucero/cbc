@@ -15,6 +15,11 @@
         result (Update db :users {:password password} where-clause)]
     result))
 
+(defn get-active-eventos []
+  (let [rows (Query db "select * from eventos where fecha >= CURDATE()")]
+    rows))
+
 (comment
+  (get-active-eventos)
   (get-user "sistema@gmail.com")
   (get-users))

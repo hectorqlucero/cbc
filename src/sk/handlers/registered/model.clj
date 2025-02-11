@@ -2,7 +2,8 @@
   (:require [sk.models.crud :refer [Query db]]
             [sk.migrations :refer [config]]
             [clojure.java.io :as io]
-            [clj.qrgen :refer [as-file from]])
+            [clj.qrgen :refer [as-file from]]
+            [sk.models.util :refer [seconds->duration]])
   (:import java.text.SimpleDateFormat
            [java.util Calendar UUID]))
 
@@ -149,7 +150,16 @@
   (first (Query db [get-corredor-by-numero-sql carrera-id numero])))
 ;; End get-corredor-by-numero
 
+(defn tiempo-para-evento
+  "Get time remaining to event"
+  [eventos-id]
+  (let [row (-> (Query db ["select TIMESTAMPDIFF(SECOND,CURRENT_TIMESTAMP(),TIMESTAMP(fecha,hora)) as tiempo from eventos where id = ?" eventos-id])
+                first)
+        result (seconds->duration (abs (:tiempo row)))]
+    result))
+
 (comment
+  (tiempo-para-evento 83)
   (get-corredor-by-numero (get-active-carrera-id) 704)
   (get-active-carrera-id)
   (get-carreras 415)
