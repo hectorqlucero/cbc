@@ -238,7 +238,11 @@
             [:td (:salida row)]])]]]]]))
 
 (defn current-time []
-  (jt/format "hh:mm:ss a" (jt/zoned-date-time)))
+  (let [zone-id (jt/zone-id "America/Tijuana")
+        locale (java.util.Locale/US)
+        formatter (jt/formatter "hh:mm:ss a" locale)
+        now (jt/zoned-date-time zone-id)]
+    (jt/format formatter now)))
 
 (defn salidas-js [carrera_id]
   [:script
