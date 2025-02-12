@@ -146,8 +146,19 @@
             :label "Seleccionar carrera!"}
            rows)))
 
+(def get-carreras-by-id-sql
+  (str
+   "select
+    numero_asignado,
+    concat(ifnull(nombre,''),' ',ifnull(apell_paterno,''),' ',ifnull(apell_materno,'')) as corredor,
+    TIME_FORMAT(salida,'%h:%i:%s %p') as salida
+    from carreras
+    where carrera_id = ?
+    order by CAST(numero_asignado AS UNSIGNED), numero_asignado
+    "))
+
 (defn get-carreras-by-id [carrera-id]
-  (Query db ["select * from carreras where carrera_id = ? order by CAST(numero_asignado AS UNSIGNED), numero_asignado" carrera-id]))
+  (Query db [get-carreras-by-id-sql carrera-id]))
 
 (comment
   (get-carreras-by-id 14)

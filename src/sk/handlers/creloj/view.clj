@@ -17,7 +17,6 @@
                      carreras-options]]
             [java-time :as jt]))
 
-
 ;; Start format seconds->duration
 (def seconds-in-minute 60)
 (def seconds-in-hour (* 60 seconds-in-minute))
@@ -235,7 +234,7 @@
          (for [row rows]
            [:tr
             [:td (:numero_asignado row)]
-            [:td (str (:nombre row) " " (:apell_paterno row) " " (:apell_materno row))]
+            [:td (:corredor row)]
             [:td (:salida row)]])]]]]]))
 
 (defn current-time []
@@ -262,7 +261,6 @@
         if(json.error) {
           alert(json.error);
         } else {
-          alert(json.success);
           location.reload();
         }
       }
