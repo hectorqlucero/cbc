@@ -22,17 +22,23 @@
 
 (defn menus-private []
   (list
-   [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+   [:navo.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+    [:div.container-fluid
     [:a.navbar-brand {:href "/"}
-     [:img.rounded-circle {:src "/images/logo.jpg"
+     [:img {:src "/images/logo.jpg"
                            :alt (:site-name config)
                            :style "width:40px;"}]]
     [:button.navbar-toggler {:type "button"
                              :data-bs-toggle "collapse"
-                             :data-bs-target "#collapsibleNavbar"}
+                             :data-bs-target "#collapsibleNavbar"
+                             :aria-controls "collapsibleNavbar"
+                             :aria-expanded "false"
+                             :aria-label "Toggle navigation"}
      [:span.navbar-toggler-icon]]
     [:div#collapsibleNavbar.collapse.navbar-collapse
-     [:ul.navbar-nav
+     [:ul.navbar-nav.ms-auto
+      [:li.nav-item [:a.nav-link.active {:aria-current "page"
+                                         :href "/"} "Inicio"]]
       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
       [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aqui"]]
       [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]
@@ -45,32 +51,38 @@
         [:li.nav-item.dropdown
          [:a.nav-link.dropdown-toggle {:href "#"
                                        :id "navdrop"
-                                       :data-bs-toggle "dropdown"} "Administrar"]
+                                       :role "button"
+                                       :data-bs-toggle "dropdown"
+                                       :aria-expanded "false"} "Administrar"]
          [:ul.dropdown-menu {:aria-labelledby "navdrop"}
           (build-admin)]])
-      [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]))
+      [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]]))
 
 (defn menus-public []
   (list
    [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
+    [:div.container-fluid
     [:a.navbar-brand {:href "/"}
-     [:img.rounded-circle {:src "/images/logo.jpg"
+     [:img {:src "/images/logo.jpg"
                            :alt (:site-name config)
                            :style "width:40px;"}]]
     [:button.navbar-toggler {:type "button"
                              :data-bs-toggle "collapse"
                              :data-bs-target "#collapsibleNavbar"
+                             :aria-controls "collapsibleNavbar"
                              :aria-expanded "false"
                              :aria-label "Toggle navigation"}
      [:span.navbar-toggler-icon]]
-    [:div#collapsibleNavbar.navbar-collapse
-     [:ul.navbar-nav.me-auto.mb-2.mb-lg-0
+    [:div#collapsibleNavbar.collapse.navbar-collapse
+     [:ul.navbar-nav.ms-auto
+      [:li.nav-item [:a.nav-link.active {:aria-current "page"
+                                         :href "/"} "Inicio"]]
       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
       [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
       [:li.nav-item [:a.nav-link {:href "/display/oregistered"} "Registrados"]]
       [:li.nav-item [:a.nav-link {:href "/imprimir/cert"} "Imprimir certificado"]]
       [:li.nav-item [:a.nav-link {:href "/home/login"
-                                  :aria-current "page"} "Entrar"]]]]]))
+                                  :aria-current "page"} "Entrar"]]]]]]))
 
 (defn menus-none []
   (list
