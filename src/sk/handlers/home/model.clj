@@ -16,7 +16,7 @@
     result))
 
 (defn get-active-eventos []
-  (let [rows (Query db "select * from eventos where fecha >= CURDATE()")]
+  (let [rows (Query db "select * from eventos where fecha >= CURDATE() order by fecha")]
     rows))
 
 (comment
