@@ -1,6 +1,7 @@
 (ns sk.handlers.registered.controller
   (:require [sk.handlers.registered.view
              :refer [registered-view
+                     registered-filter-view
                      registrados-view
                      oregistered-view
                      oregistrados-view
@@ -44,6 +45,14 @@
         ok (get-session-id)
         js (registered-js)
         content (registered-view carrera_id)]
+    (application title ok js content)))
+
+(defn registered-filter [carrera_id categoria_id]
+  (let [title "CORREDORES REGISTRADOS"
+        ok (get-session-id)
+        js (registered-js)
+        content (registered-filter-view carrera_id categoria_id)]
+    (println "content: " content)
     (application title ok js content)))
 
 (defn oregistrados [_]

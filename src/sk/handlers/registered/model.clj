@@ -54,6 +54,7 @@
    apell_paterno,
    apell_materno
    ")
+
 (defn get-registered [carrera_id]
   (Query db [registered-sql carrera_id]))
 
@@ -158,7 +159,62 @@
         result (seconds->duration (abs (:tiempo row)))]
     result))
 
+(def get-corredores-categorias-sql
+  (str
+   "
+    select distinct
+    carreras.categoria_id as value,
+    categorias.descripcion as label
+    from carreras
+    join categorias on categorias.id = carreras.categoria_id
+    where carreras.carrera_id = ?
+    "))
+(Query db [get-corredores-categorias-sql 14])
+(defn get-corredores-categorias [carrera-id]
+  (let [rows (Query db [get-corredores-categorias-sql carrera-id])
+        options (map (fn [row] {:value (:value row) :label (:label row)}) rows)]
+    (list* {:value "" :label "Seleccionar categoría..."} options)))
+
+(def get-corredores-by-categoria-sql
+  "
+   select
+   id,
+   nombre,
+   apell_paterno,
+   apell_materno,
+   pais,
+   ciudad,
+   telefono,
+   email,
+   sexo,
+   fecha_nacimiento,
+   direccion,
+   club,
+   numero_asignado,
+   categoria_id,
+   TIME_FORMAT(salida,'%H:%i:%s') as hora_salida,
+   TIME_FORMAT(llegada,'%H:%i:%s') as hora_llegada,
+   salida,
+   llegada,
+   TIMESTAMPDIFF(SECOND,salida,llegada) as tiempo
+   from carreras 
+   where carrera_id = ?
+   and categoria_id = ?
+   order by
+   nombre,
+   apell_paterno,
+   apell_materno
+   ")
+
+(defn get-corredores-by-categoria [carrera-id categoria-id]
+  (let [rows (Query db [get-corredores-by-categoria-sql carrera-id categoria-id])]
+    (map (fn [row]
+           (let [categoria (get-categoria (:categoria_id row))]
+             (assoc row :categoria categoria))) rows)))
+
 (comment
+  (get-corredores-by-categoria 14 69)
+  (get-corredores-categorias (get-active-carrera-id))
   (tiempo-para-evento 83)
   (get-corredor-by-numero (get-active-carrera-id) 704)
   (get-active-carrera-id)

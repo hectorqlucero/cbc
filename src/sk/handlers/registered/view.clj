@@ -1,23 +1,16 @@
 (ns sk.handlers.registered.view
-  (:require [hiccup.page :refer [html5]]
-            [sk.migrations :refer [config]]
-            [pdfkit-clj.core :refer [as-stream gen-pdf]]
-            [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.util :refer [parse-int
-                                    zpl
-                                    seconds->duration]]
-            [sk.models.form :refer [build-form
-                                    build-submit-button
-                                    build-field]]
-            [sk.handlers.registro.model :refer [get-active-carreras]]
-            [sk.handlers.registered.model
-             :refer [get-active-carrera-name
-                     get-categoria
-                     get-registered
-                     get-oregistered
-                     get-register-row
-                     get-carreras
-                     create-barcode]]))
+  (:require
+   [hiccup.page :refer [html5]]
+   [pdfkit-clj.core :refer [as-stream gen-pdf]]
+   [ring.util.anti-forgery :refer [anti-forgery-field]]
+   [sk.handlers.registered.model
+    :refer [create-barcode get-active-carrera-name get-carreras get-categoria
+            get-corredores-categorias get-oregistered get-register-row
+            get-registered get-corredores-by-categoria]]
+   [sk.handlers.registro.model :refer [get-active-carreras]]
+   [sk.models.form :refer [build-field build-form build-select
+                           build-submit-button]]
+   [sk.models.util :refer [parse-int seconds->duration]]))
 
 ;; Start registrados
 (defn build-body [row]
@@ -87,15 +80,48 @@
                                        :href cert-path
                                        :target "_blank"} "Certificado"]]]))
 
+(defn build-categorias
+  [carrera_id]
+  (let [p1 "get_corredores(this.value,"
+        my-function (str p1 carrera_id ")")]
+    [:select.form-control.form-select {:name "categoria" :id "categoria" :onchange my-function}
+     (map (fn [row] [:option {:value (:value row)} (:label row)]) (get-corredores-categorias carrera_id))]))
+
 (defn registered-view [carrera_id]
   (let [rows (get-oregistered carrera_id)
         cnt (reset! cnt 0)]
     [:div.container
      [:center
       [:h2 "CORREDORES REGISTRADOS"]
-      [:h3 (get-active-carrera-name carrera_id)]]
+      [:h3 (get-active-carrera-name carrera_id)]
+      [:h3 (build-categorias carrera_id)]]
      [:table.table.table-striped.table-hover.table-bordered
       [:thead.table-primary
+       [:tr]
+       [:tr
+        [:th "#"]
+        [:th "ID"]
+        [:th "Nombre"]
+        [:th "Telefono"]
+        [:th "Email"]
+        [:th "Categoria"]
+        [:th "No Asignado"]
+        [:th "Imprimir"]
+        [:th "Cert"]]]
+      [:tbody (map my-body rows)]]]))
+
+(defn registered-filter-view [carrera_id categoria_id]
+  (println "at registered-view carrera_id " carrera_id " categoria_id: " categoria_id)
+  (let [rows (get-corredores-by-categoria carrera_id categoria_id)
+        cnt (reset! cnt 0)]
+    [:div.container
+     [:center
+      [:h2 "CORREDORES REGISTRADOS"]
+      [:h3 (get-active-carrera-name carrera_id)]
+      [:h3 (build-categorias carrera_id)]]
+     [:table.table.table-striped.table-hover.table-bordered
+      [:thead.table-primary
+       [:tr]
        [:tr
         [:th "#"]
         [:th "ID"]
@@ -136,6 +162,7 @@
         [:th "Categoria"]
         [:th "Tiempo"]]]
       [:tbody (map omy-body rows)]]]))
+
 ;; End oregistered-view
 
 (def table-style
@@ -253,6 +280,17 @@
 
 (defn registered-js []
   [:script
+   (str "
+         function get_corredores(categoria_id,carrera_id) {
+          var display_url = '/display/registered/'+carrera_id;
+          var url = '/filtrar/registered/'+carrera_id+'/'+categoria_id;
+          if(!categoria_id) {
+            window.location.assign(display_url);
+          } else {
+            window.location.assign(url);
+          }
+         }
+         ")
    (str "function postValue(id,no) {
          $.get('/update/registered/'+id+'/'+no, function(data) {
            var mensaje = JSON.parse(data);
