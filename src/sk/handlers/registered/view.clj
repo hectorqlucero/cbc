@@ -111,7 +111,6 @@
       [:tbody (map my-body rows)]]]))
 
 (defn registered-filter-view [carrera_id categoria_id]
-  (println "at registered-view carrera_id " carrera_id " categoria_id: " categoria_id)
   (let [rows (get-corredores-by-categoria carrera_id categoria_id)
         cnt (reset! cnt 0)]
     [:div.container

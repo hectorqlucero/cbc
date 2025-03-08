@@ -52,7 +52,6 @@
         ok (get-session-id)
         js (registered-js)
         content (registered-filter-view carrera_id categoria_id)]
-    (println "content: " content)
     (application title ok js content)))
 
 (defn oregistrados [_]
