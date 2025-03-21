@@ -24,65 +24,66 @@
   (list
    [:navo.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
     [:div.container-fluid
-    [:a.navbar-brand {:href "/"}
-     [:img {:src "/images/logo.jpg"
-                           :alt (:site-name config)
-                           :style "width:40px;"}]]
-    [:button.navbar-toggler {:type "button"
-                             :data-bs-toggle "collapse"
-                             :data-bs-target "#collapsibleNavbar"
-                             :aria-controls "collapsibleNavbar"
-                             :aria-expanded "false"
-                             :aria-label "Toggle navigation"}
-     [:span.navbar-toggler-icon]]
-    [:div#collapsibleNavbar.collapse.navbar-collapse
-     [:ul.navbar-nav.ms-auto
-      [:li.nav-item [:a.nav-link.active {:aria-current "page"
-                                         :href "/"} "Inicio"]]
-      [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
-      [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aqui"]]
-      [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]
-      [:li.nav-item [:a.nav-link {:href "/display/creloj"} "Contra-Reloj"]]
-      (when
-       (or
-        (= (user-level) "U")
-        (= (user-level) "A")
-        (= (user-level) "S"))
-        [:li.nav-item.dropdown
-         [:a.nav-link.dropdown-toggle {:href "#"
-                                       :id "navdrop"
-                                       :role "button"
-                                       :data-bs-toggle "dropdown"
-                                       :aria-expanded "false"} "Administrar"]
-         [:ul.dropdown-menu {:aria-labelledby "navdrop"}
-          (build-admin)]])
-      [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]]))
+     [:a.navbar-brand {:href "/"}
+      [:img {:src "/images/logo.jpg"
+             :alt (:site-name config)
+             :style "width:40px;"}]]
+     [:button.navbar-toggler {:type "button"
+                              :data-bs-toggle "collapse"
+                              :data-bs-target "#collapsibleNavbar"
+                              :aria-controls "collapsibleNavbar"
+                              :aria-expanded "false"
+                              :aria-label "Toggle navigation"}
+      [:span.navbar-toggler-icon]]
+     [:div#collapsibleNavbar.collapse.navbar-collapse
+      [:ul.navbar-nav.ms-auto
+       [:li.nav-item [:a.nav-link.active {:aria-current "page"
+                                          :href "/"} "Inicio"]]
+       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+       [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aqui"]]
+       [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]
+       [:li.nav-item [:a.nav-link.active {:href "/carreras"} "Carreras"]]
+       [:li.nav-item [:a.nav-link {:href "/display/creloj"} "Contra-Reloj"]]
+       (when
+        (or
+         (= (user-level) "U")
+         (= (user-level) "A")
+         (= (user-level) "S"))
+         [:li.nav-item.dropdown
+          [:a.nav-link.dropdown-toggle {:href "#"
+                                        :id "navdrop"
+                                        :role "button"
+                                        :data-bs-toggle "dropdown"
+                                        :aria-expanded "false"} "Administrar"]
+          [:ul.dropdown-menu {:aria-labelledby "navdrop"}
+           (build-admin)]])
+       [:li.nav-item [:a.nav-link {:href "/home/logoff"} (str "Salir [" (user-name) "]")]]]]]]))
 
 (defn menus-public []
   (list
    [:nav.navbar.navbar-expand-lg.navbar-light.bg-light.fixed-top
     [:div.container-fluid
-    [:a.navbar-brand {:href "/"}
-     [:img {:src "/images/logo.jpg"
-                           :alt (:site-name config)
-                           :style "width:40px;"}]]
-    [:button.navbar-toggler {:type "button"
-                             :data-bs-toggle "collapse"
-                             :data-bs-target "#collapsibleNavbar"
-                             :aria-controls "collapsibleNavbar"
-                             :aria-expanded "false"
-                             :aria-label "Toggle navigation"}
-     [:span.navbar-toggler-icon]]
-    [:div#collapsibleNavbar.collapse.navbar-collapse
-     [:ul.navbar-nav.ms-auto
-      [:li.nav-item [:a.nav-link.active {:aria-current "page"
-                                         :href "/"} "Inicio"]]
-      [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
-      [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
-      [:li.nav-item [:a.nav-link {:href "/display/oregistered"} "Registrados"]]
-      [:li.nav-item [:a.nav-link {:href "/imprimir/cert"} "Imprimir certificado"]]
-      [:li.nav-item [:a.nav-link {:href "/home/login"
-                                  :aria-current "page"} "Entrar"]]]]]]))
+     [:a.navbar-brand {:href "/"}
+      [:img {:src "/images/logo.jpg"
+             :alt (:site-name config)
+             :style "width:40px;"}]]
+     [:button.navbar-toggler {:type "button"
+                              :data-bs-toggle "collapse"
+                              :data-bs-target "#collapsibleNavbar"
+                              :aria-controls "collapsibleNavbar"
+                              :aria-expanded "false"
+                              :aria-label "Toggle navigation"}
+      [:span.navbar-toggler-icon]]
+     [:div#collapsibleNavbar.collapse.navbar-collapse
+      [:ul.navbar-nav.ms-auto
+       [:li.nav-item [:a.nav-link.active {:aria-current "page"
+                                          :href "/"} "Inicio"]]
+       [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
+       [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aquí"]]
+       [:li.nav-item [:a.nav-link {:href "/display/oregistered"} "Registrados"]]
+       [:li.nav-item [:a.nav-link {:href "/imprimir/cert"} "Imprimir certificado"]]
+       [:li.nav-item [:a.nav-link {:href "/home/login"
+                                   :aria-current "page"} "Entrar"]]]]]]))
 
 (defn menus-none []
   (list
@@ -110,8 +111,11 @@
   (list
    (include-js "/js/jquery.min.js")
    (include-js "/bootstrap5/js/bootstrap.bundle.min.js")
-   (include-js "/bootstrap-table-master/dist/bootstrap-table.min.js")
-   (include-js "/bootstrap-table-master/dist/extensions/print/bootstrap-table-print.min.js")
+   (include-js "/bootstrap-table-master/dist/extensions/export/tableExport.min.js")
+   (include-js "/bootstrap-table-master/dist/extensions/export/jspdf.umd.min.js")
+   (include-js "/bootstrap-table-master/dist/extensions/export/bootstrap-table.min.js")
+   (include-js "/bootstrap-table-master/dist/extensions/export/bootstrap-table-export.min.js")
+   (include-js "/bootstrap-table-master/dist/extensions/export/bootstrap-table-print.min.js")
    (include-js "/bootstrap-table-master/dist/locale/bootstrap-table-es-MX.min.js")
    (include-js "/js/extra.js")))
 

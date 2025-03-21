@@ -1,8 +1,9 @@
 (ns sk.models.builder
-  (:require [clojure.java.io :as io]
-            [clojure.string :as st]
-            [hiccup.core :refer [html]]
-            [sk.models.crud :refer [db get-table-describe Save]]))
+  (:require
+   [clojure.java.io :as io]
+   [clojure.string :as st]
+   [sk.models.crud :refer [get-table-describe]]
+   [sk.models.routes :refer [process-grid process-dashboard]]))
 
 (defn create-path [path]
   (.mkdir (io/file path)))
@@ -224,6 +225,7 @@
     :secure 1
     :link (str "/admin/" table)
     :root "src/sk/handlers/admin/"})
+  (process-grid table)
   (println (str "Codigo generado en: src/sk/handlers/admin/" table)))
 ;; End build-grid
 
@@ -326,6 +328,7 @@
     :secure 3
     :link (str "/" table)
     :root "src/sk/handlers/"})
+  (process-dashboard table)
   (println (str "Codigo generado en: src/sk/handlers/" table)))
 ;; End build-dashboard
 

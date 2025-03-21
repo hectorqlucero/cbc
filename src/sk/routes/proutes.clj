@@ -7,7 +7,8 @@
             [sk.handlers.registered.controller :as registered-controller]
             [sk.handlers.admin.mensajes.controller :as mensajes-controller]
             [sk.handlers.users.controller :as users-dashboard]
-            [sk.handlers.creloj.controller :as creloj-controller]))
+            [sk.handlers.creloj.controller :as creloj-controller]
+            [sk.handlers.carreras.controller :as carreras-dashboard]))
 
 (defroutes proutes
   (GET "/admin/users" params [] (users-controller/users params))
@@ -41,6 +42,7 @@
   (GET "/admin/mensajes/delete/:id" [id] (mensajes-controller/mensajes-delete id))
 
   (GET "/users" params [] (users-dashboard/users params))
+  (GET "/carreras" params [] (carreras-dashboard/carreras params))
 
   ;; Start display registered
   (GET "/display/registered" req [] (registered-controller/registrados req))
