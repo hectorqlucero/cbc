@@ -14,11 +14,16 @@
 
 ;; Start registrados
 (defn build-body [row]
-  (let [href (str "/display/registered/" (:id row))]
+  (let [href (str "/display/registered/" (:id row))
+        cref (str "/display/carreras/" (:id row))]
     [:tr
      [:td (:descripcion row)]
      [:td [:a.btn.btn-primary {:role "button"
-                               :href href} "Registrados"]]]))
+                               :href href
+                               :style "margin-right:5px;"} "Registrados"]
+      [:a.btn.btn-primary {:role "button"
+                           :href cref
+                           :style "margin-right:5px;"} "Reporte"]]]))
 
 (defn registrados-view []
   (list

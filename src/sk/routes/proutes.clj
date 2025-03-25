@@ -43,6 +43,7 @@
 
   (GET "/users" params [] (users-dashboard/users params))
   (GET "/carreras" params [] (carreras-dashboard/carreras params))
+  (GET "/display/carreras/:id" [id] (carreras-dashboard/reporte id))
 
   ;; Start display registered
   (GET "/display/registered" req [] (registered-controller/registrados req))

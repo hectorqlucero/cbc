@@ -38,6 +38,12 @@
         rows (map #(assoc % :tiempo (seconds->duration (:tiempo %))) data)]
     rows))
 
+(defn get-carreras-by-id
+  [id]
+  (let [data (Query db [get-carreras-sql id])
+        rows (map #(assoc % :tiempo (seconds->duration (:tiempo %))) data)]
+    rows))
+
 (def get-carreras-id-sql
   (str
    "
@@ -51,4 +57,5 @@ WHERE id = ?
   (first (Query db [get-carreras-id-sql id])))
 
 (comment
+  (get-carreras-by-id 14)
   (get-carreras))
