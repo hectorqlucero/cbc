@@ -8,6 +8,10 @@
       first
       :id))
 
+(defn get-carrera-name
+  [carrera_id]
+  (:descripcion (first (Query db ["select descripcion from carrera where id = ?" carrera_id]))))
+
 (def get-carreras-sql
   (str
    "
@@ -57,5 +61,6 @@ WHERE id = ?
   (first (Query db [get-carreras-id-sql id])))
 
 (comment
+  (get-carrera-name 14)
   (get-carreras-by-id 14)
   (get-carreras))
