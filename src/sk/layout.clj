@@ -42,7 +42,7 @@
        [:li.nav-item [:a.nav-link {:href "/eventos/list"} "Eventos"]]
        [:li.nav-item [:a.nav-link {:href "/registro"} "Registrar aqui"]]
        [:li.nav-item [:a.nav-link {:href "/display/registered"} "Registrados"]]
-       [:li.nav-item [:a.nav-link.active {:href "/carreras"} "Carreras"]]
+       [:li.nav-item [:a.nav-link.active {:href "/carreras"} "Reporte"]]
        [:li.nav-item [:a.nav-link {:href "/display/creloj"} "Contra-Reloj"]]
        (when
         (or
