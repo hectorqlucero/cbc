@@ -27,7 +27,7 @@
                      first
                      :id)]
     (list
-     [:div#carouselExample.carousel.slide
+     [:div#carouselExample.carousel.slide {:data-bs-ride "carousel"}
       [:div.carousel-inner
        (doall (map (partial (fn [row]
                               (slideshow-body row first-id))) rows))]
