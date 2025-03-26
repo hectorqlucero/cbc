@@ -208,5 +208,11 @@
                            (when (> sec 0) (str sec " seg")))))))
 ;; End format seconds->duration
 
+(defn image-link
+  [image-name]
+  (let [path (str (:path config) image-name "?" (random-uuid))
+        img-link (str "<img src='" path "' alt='" image-name "' width=32 height=32>")]
+    img-link))
+
 (comment
   (seconds->duration 992932))

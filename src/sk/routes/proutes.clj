@@ -1,14 +1,15 @@
 (ns sk.routes.proutes
-  (:require [compojure.core :refer [defroutes GET POST]]
-            [sk.handlers.admin.users.controller :as users-controller]
-            [sk.handlers.admin.eventos.controller :as eventos-controller]
-            [sk.handlers.admin.carrera.controller :as carrera-controller]
-            [sk.handlers.admin.categorias.controller :as categorias-controller]
-            [sk.handlers.registered.controller :as registered-controller]
-            [sk.handlers.admin.mensajes.controller :as mensajes-controller]
-            [sk.handlers.users.controller :as users-dashboard]
-            [sk.handlers.creloj.controller :as creloj-controller]
-            [sk.handlers.carreras.controller :as carreras-dashboard]))
+  (:require
+   [compojure.core :refer [defroutes GET POST]]
+   [sk.handlers.admin.users.controller :as users-controller]
+   [sk.handlers.admin.eventos.controller :as eventos-controller]
+   [sk.handlers.admin.carrera.controller :as carrera-controller]
+   [sk.handlers.admin.categorias.controller :as categorias-controller]
+   [sk.handlers.registered.controller :as registered-controller]
+   [sk.handlers.admin.mensajes.controller :as mensajes-controller]
+   [sk.handlers.users.controller :as users-dashboard]
+   [sk.handlers.creloj.controller :as creloj-controller]
+   [sk.handlers.carreras.controller :as carreras-dashboard]))
 
 (defroutes proutes
   (GET "/admin/users" params [] (users-controller/users params))
