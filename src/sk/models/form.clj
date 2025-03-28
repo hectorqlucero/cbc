@@ -1,7 +1,7 @@
 (ns sk.models.form
-  (:require
-   [ring.util.anti-forgery :refer [anti-forgery-field]]
-   [sk.migrations :refer [config]]))
+  (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.migrations :refer [config]])
+  (:import [java.util Calendar UUID]))
 
 (defn password-form
   [title]
@@ -37,25 +37,23 @@
      (anti-forgery-field)
      [:div.form-group
       [:label.font-weight-bold {:for "username"} "Email:"]
-      [:input.form-control {:id "username"
-                            :name "username"
-                            :type "email"
-                            :required "true"
-                            :class "mandatory"
-                            :oninvalid "this.setCustomValidity('Email es requerido...')"
-                            :oninput "this.setCustomValidity('')"
-                            :placeholder "Email aqui..."}]]
+      [:input.mandatory.form-control {:id "username"
+                                      :name "username"
+                                      :type "email"
+                                      :required "true"
+                                      :oninvalid "this.setCustomValidity('Email es requerido...')"
+                                      :oninput "this.setCustomValidity('')"
+                                      :placeholder "Email aqui..."}]]
      [:div.form-group
       [:label.font-weight-bold {:for "password"} "Contraseña:"]
-      [:input.form-control {:id "password"
-                            :style "margin-bottom:5px;"
-                            :name "password"
-                            :required "true"
-                            :class "mandatory"
-                            :oninvalid "this.setCustomValidity('La contraseña es requerida...')"
-                            :oninput "this.setCustomValidity('')"
-                            :placeholder "Contraseña aqui..."
-                            :type "Password"}]]
+      [:input.mandatory.form-control {:id "password"
+                                      :style "margin-bottom:5px;"
+                                      :name "password"
+                                      :required "true"
+                                      :oninvalid "this.setCustomValidity('La contraseña es requerida...')"
+                                      :oninput "this.setCustomValidity('')"
+                                      :placeholder "Contraseña aqui..."
+                                      :type "Password"}]]
      [:input.btn.btn-primary {:type "submit"
                               :value "Ingresar al sitio"
                               :style "margin-right:2px;"}]
@@ -72,16 +70,17 @@
 
 (defn build-image-field
   [row]
-  (list
-   [:input {:id "file"
-            :name "file"
-            :type "file"}]
-   [:div {:style "float:left;margin-right:2px;"}
-    [:img#image1 {:width "95"
-                  :height "71"
-                  :src (str (:path config) (:imagen row))
-                  :onError "this.src='/images/placeholder_profile.png'"
-                  :style "margin-right:wpx;cursor:pointer;"}]]))
+  (let [uuid (str (UUID/randomUUID))]
+    (list
+     [:input {:id "file"
+              :name "file"
+              :type "file"}]
+     [:div {:style "float:left;margin-right:2px;"}
+      [:img#image1 {:width "95"
+                    :height "71"
+                    :src (str (:path config) (:imagen row) "?" uuid)
+                    :onError "this.src='/images/placeholder_profile.png'"
+                    :style "margin-right:wpx;cursor:pointer;"}]])))
 
 (defn build-image-field-script
   []
@@ -98,41 +97,15 @@
     });
     ")])
 
-(defn build-dashboard-image
-  [row]
-  [:div {:style "float:left;margin-right:2px;"}
-   [:img#image1 {:width "32"
-                 :height "32"
-                 :src (str (:path config) (:imagen row))
-                 :onError "this.src='/images/placeholder_profile.png'"
-                 :style "margin-right:wpx;cursor:pointer;"}]])
-
-(defn build-dashboard-image-script
-  []
-  [:script
-   (str
-    "
-    $(document).ready(function() {
-      $('img').click(function() {
-        var img = $(this);
-        if(img.width() < 500) {
-          img.animate({width: '500', height: '500'}, 1000);
-        } else {
-          img.animate({width: img.attr(\"width\"), height: img.attr(\"height\")}, 1000);
-        }
-      });
-    });
-    ")])
-
 (defn build-field
   "args:label,type,id,name,placeholder,required,error,value"
   [args]
-  (let [my-class (str "form-control" (when (= (:required args) true) " mandatory"))
-        args (assoc args :class my-class)]
-    (list
-     [:div.form-group
-      [:label.font-weight-bold {:for (:name args)} (:label args)]
-      [:input args]])))
+  (list
+   [:div.form-group
+    [:label.font-weight-bold {:for (:name args)} (:label args)]
+    (if (= (:required args) true)
+      [:input.mandatory.form-control args]
+      [:input.form-control args])]))
 
 (defn build-textarea
   "args:label,id,name,placeholder,required,error,value"
@@ -140,14 +113,21 @@
   (list
    [:div.form-group
     [:label.font-weight-bold {:for (:name args)} (:label args)]
-    [:textarea {:id (:id args)
-                :name (:name args)
-                :rows (:rows args)
-                :placeholder (:placeholder args)
-                :required (:required args)
-                :class (str "form-control" (when (= (:required args) true) " mandatory"))
-                :oninvalid (str "this.setCustomValidity('" (:error args) "')")
-                :oninput "this.setCustomValidity('')"} (:value args)]]))
+    (if (= (:required args) true)
+      [:textarea.mandatory.form-control {:id (:id args)
+                                         :name (:name args)
+                                         :rows (:rows args)
+                                         :placeholder (:placeholder args)
+                                         :required (:required args)
+                                         :oninvalid (str "this.setCustomValidity('" (:error args) "')")
+                                         :oninput "this.setCustomValidity('')"} (:value args)]
+      [:textarea.form-control {:id (:id args)
+                               :name (:name args)
+                               :rows (:rows args)
+                               :placeholder (:placeholder args)
+                               :required (:required args)
+                               :oninvalid (str "this.setCustomValidity('" (:error args) "')")
+                               :oninput "this.setCustomValidity('')"} (:value args)])]))
 
 (defn build-select
   "args:label,id,name,required,error"
@@ -156,16 +136,25 @@
     (list
      [:div.form-group
       [:label.font-weight-bold {:for (:name args)} (:label args)]
-      [:select {:id (:id args)
-                :name (:name args)
-                :required (:required args)
-                :class (str "form-control form-select" (when (= (:required args) true) " mandatory"))
-                :oninvalid (str "this.setCustomValidity('" (:error args) "')")
-                :oninput "this.setCustomValidity('')"}
-       (map (partial (fn [option]
-                       (list
-                        [:option {:value (:value option)
-                                  :selected (if (= (:value args) (:value option)) true false)} (:label option)]))) options)]])))
+      (if (= (:required args true))
+        [:select.mandatory.form-control.form-select {:id (:id args)
+                                                     :name (:name args)
+                                                     :required (:required args)
+                                                     :oninvalid (str "this.setCustomValidity('" (:error args) "')")
+                                                     :oninput "this.setCustomValidity('')"}
+         (map (partial (fn [option]
+                         (list
+                          [:option {:value (:value option)
+                                    :selected (if (= (:value args) (:value option)) true false)} (:label option)]))) (:options args))]
+        [:select.form-control.form-select {:id (:id args)
+                                           :name (:name args)
+                                           :required (:required args)
+                                           :oninvalid (str "this.setCustomValidity('" (:error args) "')")
+                                           :oninput "this.setCustomValidity('')"}
+         (map (partial (fn [option]
+                         (list
+                          [:option {:value (:value option)
+                                    :selected (if (= (:value args) (:value option)) true false)} (:label option)]))) (:options args))])])))
 
 (defn build-radio
   [args]
@@ -200,14 +189,19 @@
 (defn build-primary-anchor-button
   "args: label,href"
   [args]
-  [:a.btn.btn-primary {:type "button"
-                       :href (:href (:href args))} (:label args)])
+  [:a.btn.btn-primary {:role "button"
+                       :href (:href args)} (:label args)])
+
+(defn build-submit-button
+  "args: label"
+  [args]
+  [:button.btn-primary {:type "submit"} (:label args)])
 
 (defn build-secondary-anchor-button
   "args: label,href"
   [args]
-  [:a.btn.btn-secondary {:type "button"
-                         :href (:href (:href args))} (:label args)])
+  [:a.btn.btn-secondary {:role "button"
+                         :href (:href args)} (:label args)])
 
 (defn build-modal-buttons
   [& args]
@@ -231,6 +225,18 @@
      fields
      buttons]]))
 ;; End form
+
+(defn build-form
+  [title href fields buttons]
+  (list
+   [:div.container.border.w-50.bg-light
+    [:legend title]
+    [:form {:method "POST"
+            :class "fm"
+            :action href}
+     (anti-forgery-field)
+     fields
+     [:div.form-group {:style "margin-top:5px;"} buttons]]]))
 
 (comment
   "Ejemplo de uso: value=mysql data"
@@ -274,35 +280,35 @@
                 :name "nombre"
                 :placeholder "El nombre aqui..."
                 :required false
-                :value (:nombre "row")})
+                :value (:nombre row)})
   (build-field {:label "Email" ;; email field example
                 :type "email"
                 :id "correo_electronico"
                 :name "correo_electronico"
                 :placeholder "El correo electronico aqui!"
                 :required false
-                :value (:correo_electronico "row")})
+                :value (:correo_electronico row)})
   (build-field {:label "Buscar contacto"
                 :type "search"
                 :id "buscar_contacto"
                 :name "buscar_contacto"
                 :placeholder "Busqueda aqui!"
                 :required false
-                :value (:buscar_contacto "row")})
+                :value (:buscar_contacto row)})
   (build-field {:label "Celular" ;; phone field example
                 :type "tel"
                 :id "celular"
                 :name "celular"
                 :placeholder "Celular aqui!"
                 :required false
-                :value (:celular "row")})
+                :value (:celular row)})
   (build-field {:label "URL" ;; url field exampl
                 :type "url"
                 :id "url_pagina"
                 :name "url_pagina"
                 :placeholder "url de pagina aqui!"
                 :required false
-                :value (:url_pagina "row")})
+                :value (:url_pagina row)})
   (build-field {:label "Edad" ;; number field example
                 :type "number"
                 :id "edad"
@@ -312,13 +318,13 @@
                 :step "1"
                 :placeholder "Edad aqui!"
                 :required false
-                :value (:edad "row")})
+                :value (:edad row)})
   (build-field {:label "Fecha de Nacimiento" ;; date field example
                 :type "date"
                 :id "nacimiento"
                 :name "nacimiento"
                 :required false
-                :value (:nacimiento "row")})
+                :value (:nacimiento row)})
   (build-field {:label "Cuando estaras disponible este verano?" ;; date with controls- does not work on all browsers
                 :type "date"
                 :id "disponible_fecha"
@@ -326,22 +332,22 @@
                 :min "2024-06-01"
                 :max "2024-08-31"
                 :step "7"
-                :balue (:disponible_fecha "row")})
+                :balue (:disponible_fecha row)})
   (build-field {:label "Mes" ;; month field example - does not work on all browsers
                 :type "month"
                 :id "mes"
                 :name "mes"
                 :required false
-                :value (:mes "row")})
+                :value (:mes row)})
   (build-field {:label "Semana" ;; week field example - does not work on all browsers
                 :type "week"
                 :id "semana"
                 :name "semana"
                 :required false
-                :value (:semana "row")})
+                :value (:semana row)})
   (build-field {:label "Escoja un color" ;; color field example
                 :type "color"
                 :id "color"
                 :name "color"
                 :required false
-                :value (:color "row")}))
+                :value (:color row)}))
