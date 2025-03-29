@@ -298,7 +298,6 @@
    (str "function postValue(id,no) {
          $.get('/update/registered/'+id+'/'+no, function(data) {
            var mensaje = JSON.parse(data);
-           alert(mensaje.message);
          })
    }")])
 
