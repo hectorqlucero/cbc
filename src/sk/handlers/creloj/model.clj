@@ -155,19 +155,21 @@
   (str
    "select
     numero_asignado,
-    concat(ifnull(nombre,''),' ',ifnull(apell_paterno,''),' ',ifnull(apell_materno,'')) as corredor,
-    TIME_FORMAT(salida,'%h:%i:%s %p') as salida,
-    TIME_FORMAT(llegada,'%h:%i:%s %p') as llegada,
-    ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
+    categorias.descripcion as categoria,
+    concat(ifnull(carreras.nombre,''),' ',ifnull(carreras.apell_paterno,''),' ',ifnull(carreras.apell_materno,'')) as corredor,
+    TIME_FORMAT(carreras.salida,'%h:%i:%s %p') as salida,
+    TIME_FORMAT(carreras.llegada,'%h:%i:%s %p') as llegada,
+    ABS(TIMESTAMPDIFF(SECOND,carreras.llegada,carreras.salida)) as tiempo
     from carreras
-    where carrera_id = ?
-    and salida is not null
-    and salida != '00:00:00'
-    and numero_asignado is not null
-    and numero_asignado != ''
-    and numero_asignado != ' '
-    and numero_asignado != '0'
-    order by CAST(numero_asignado AS UNSIGNED), numero_asignado
+    join categorias on categorias.id = carreras.categoria_id
+    where carreras.carrera_id = ?
+    and carreras.salida is not null
+    and carreras.salida != '00:00:00'
+    and carreras.numero_asignado is not null
+    and carreras.numero_asignado != ''
+    and carreras.numero_asignado != ' '
+    and carreras.numero_asignado != '0'
+    order by tiempo,CAST(carreras.numero_asignado AS UNSIGNED), carreras.numero_asignado
     "))
 
 (defn get-carreras-by-id [carrera-id]

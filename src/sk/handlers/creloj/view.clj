@@ -287,6 +287,8 @@
                 :data-sortable "true"} "#NUM"]
           [:th {:data-field "corredor"
                 :data-sortable "true"} "CORREDOR"]
+          [:th {:data-field "categoria"
+                :data-sortable "true"} "CATEGORIA"]
           [:th {:data-field "salida"
                 :data-sortable "true"} "SALIDA"]]]
         [:tbody
@@ -294,6 +296,7 @@
            [:tr
             [:td (:numero_asignado row)]
             [:td (:corredor row)]
+            [:td (:categoria row)]
             [:td (:salida row)]])]]]]]))
 
 (defn current-time []
@@ -377,6 +380,8 @@
                 :data-sortable "true"} "#NUM"]
           [:th {:data-field "corredor"
                 :data-sortable "true"} "CORREDOR"]
+          [:th {:data-field "categoria"
+                :data-sortable "true"} "CATEGORIA"]
           [:th {:data-field "salida"
                 :data-sortable "true"} "SALIDA"]
           [:th {:data-field "llegada"
@@ -388,6 +393,7 @@
            [:tr
             [:td (:numero_asignado row)]
             [:td (:corredor row)]
+            [:td (:categoria row)]
             [:td (:salida row)]
             [:td (:llegada row)]
             [:td (:tiempo row)]])]]]]]))
