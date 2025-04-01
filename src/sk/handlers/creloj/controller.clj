@@ -22,12 +22,12 @@
                                               get-lector
                                               process-lector]]
             [sk.models.crud :refer [Update db]]
-            [sk.models.util :refer [current_time_internal
+            [sk.models.util :refer [get-session-id
+                                    current_time_internal
                                     parse-int]]
             [cheshire.core :refer [generate-string]]
             [sk.layout
-             :refer [application error-404]]
-            [sk.models.util :refer [get-session-id]]))
+             :refer [application error-404]]))
 
 (defn get-time []
   (current-time))
