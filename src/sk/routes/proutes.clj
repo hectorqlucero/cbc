@@ -73,6 +73,8 @@
   ;; Start limpiar
   (GET "/admin/limpiar" req [] (creloj-controller/limpiar-form req))
   (POST "/admin/limpiar" req [] (creloj-controller/limpiar-tiempos req))
+  (GET "/admin/limpiar/numeros" req [] (creloj-controller/limpiar-numeros-form req))
+  (POST "/admin/limpiar/numeros" req [] (creloj-controller/limpiar-numeros req))
   ;; End limpiar
 
   ;; Start lector

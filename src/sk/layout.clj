@@ -15,6 +15,7 @@
       [:li [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]]
+      [:li [:a.dropdown-item {:href "/admin/limpiar/numeros"} "Limpiar Numeros"]]
       [:li [:a.dropdown-item {:href "/admin/limpiar"} "Limpiar Contrareloj"]]
       [:li [:a.dropdown-item {:href "/procesar/lector"} "Procesar Lector->carreras"]]
       (when (= (user-level) "S")

@@ -8,6 +8,8 @@
                      seconds->duration
                      limpiar-view
                      limpiar-script
+                     limpiar-numeros-view
+                     limpiar-numeros-script
                      salidas-view
                      salidas-js
                      llegadas-view
@@ -15,6 +17,7 @@
                      current-time]]
             [sk.handlers.creloj.model :refer [get-oregistered
                                               limpiar
+                                              limpiar-numero-asignado
                                               get-carreras-row
                                               get-lector
                                               process-lector]]
@@ -125,6 +128,27 @@
         result (limpiar carrera-id)]
     (if result
       (error-404 "Tiempos limpiados!" "/")
+      (error-404 "Incapaz de nulificar campos!" "/"))))
+
+(defn limpiar-numeros-form [_]
+  (let [title "Limpiar numeros"
+        ok (get-session-id)
+        js (limpiar-numeros-script)
+        content (limpiar-numeros-view title)]
+    (application title ok js content)))
+
+(defn limpiar-numeros [{params :params}]
+  (let [carrera-id (:id params)
+        result (limpiar-numero-asignado carrera-id)]
+    (if result
+      (error-404 "Numeros limpiados!" "/")
+      (error-404 "Incapaz de nulificar campos!" "/"))))
+
+(defn limpiar-numeros [{params :params}]
+  (let [carrera-id (:id params)
+        result (limpiar-numero-asignado carrera-id)]
+    (if result
+      (error-404 "Numeros limpiados!" "/")
       (error-404 "Incapaz de nulificar campos!" "/"))))
 
 (defn procesar-salidas [carrera_id numero_asignado]

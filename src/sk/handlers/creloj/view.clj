@@ -167,6 +167,53 @@
 
 ;; End limpiar
 
+;; Start limpiar
+(defn limpiar-numeros-view [title]
+  (build-form
+   title
+   ""
+   (build-select
+    {:label "Carrera"
+     :id "id"
+     :name "id"
+     :value ""
+     :options (carreras-options)})
+   [:button.bnt.btn-primary {:id "submit"
+                             :onclick "submitForm()"} "Limpiar"]))
+
+(defn limpiar-numeros-script []
+  [:script
+   "
+    function submitForm() {
+        $('.fm').form('submit', {
+            onSubmit:function() {
+                if($(this).form('validate')) {
+                  $('#submit').prop('disabled',true);
+                  $('#submit').html('Procesando!');
+                }
+                return $(this).form('enableValidation').form('validate');
+            },
+            success: function(data) {
+                try {
+                    var dta = JSON.parse(data);
+                    if(dta.hasOwnProperty('url')) {
+                        alert(dta.url);
+                        window.location.href = dta.url;
+                    } else if(dta.hasOwnProperty('error')) {
+                        alert(dta.error);
+                        $('#submit').prop('disabled',true);
+                        $('#submit').html('Limpiar');
+                    }
+                } catch(e) {
+                    console.error('Invalid JSON');
+                }
+            }
+        });
+    }
+   "])
+
+;; End limpiar
+
 ;; Start creloj-scripts
 (defn creloj-js [carrera_id]
   [:script
@@ -222,14 +269,26 @@
        [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
        [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
                                  :onclick "procesar()"} "Salir"]]
-      [:div.col-md-6
+      [:div.col-md-8.table-responsive
        [:h2 "Corredores"]
-       [:table.table.table-sm.table-bordered
-        [:thead
+       [:table.table.table-sm {:id "salidas-table"
+                               :data-show-export "true"
+                               :data-locale "es-MX"
+                               :data-toggle "table"
+                               :data-show-columns "true"
+                               :data-show-toggle "true"
+                               :data-show-print "true"
+                               :data-search "true"
+                               :data-pagination "false"
+                               :data-key-events "true"}
+        [:thead.table-light
          [:tr
-          [:td "#NUM"]
-          [:td "CORREDOR"]
-          [:td "SALIDA"]]]
+          [:th {:data-field "numero_asignado"
+                :data-sortable "true"} "#NUM"]
+          [:th {:data-field "corredor"
+                :data-sortable "true"} "CORREDOR"]
+          [:th {:data-field "salida"
+                :data-sortable "true"} "SALIDA"]]]
         [:tbody
          (for [row rows]
            [:tr
@@ -289,20 +348,63 @@
 
 ;; Start llegadas
 (defn llegadas-view [carrera_id]
-  [:div.container
-   [:div.row {:style "width:200px;border:1px; solid black;background:white;"}
-    [:div.col-sm
-     [:h1 "LLEGADAS"]
-     [:div#runningTime]
-     [:hr]
-     [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
-     [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
-                               :onclick "procesar_l()"} "LLegar"]]]])
+  (let [rows (get-carreras-by-id carrera_id)]
+    [:div.container
+     [:div.row
+      [:div.col-md-3
+       [:h1 "LLEGADAS"]
+       [:div#runningTime]
+       [:h2#clock "Loading..."]
+       [:hr]
+       [:input#numero {:type "text" :placeholder "Numero corredor aqui"}]
+       [:button.btn.btn-primary {:style "align:center;width:100%;margin-top:5px;margin-bottom:5px;"
+                                 :onclick "procesar_llegadas()"} "Llegar"]]
+      [:div.col-md-8.table-responsive
+       [:h2 "Corredores"]
+       [:table.table.table-sm {:id "llegadas-table"
+                               :data-show-export "true"
+                               :data-locale "es-MX"
+                               :data-toggle "table"
+                               :data-show-columns "true"
+                               :data-show-toggle "true"
+                               :data-show-print "true"
+                               :data-search "true"
+                               :data-pagination "false"
+                               :data-key-events "true"}
+        [:thead.table-light
+         [:tr
+          [:th {:data-field "numero_asignado"
+                :data-sortable "true"} "#NUM"]
+          [:th {:data-field "corredor"
+                :data-sortable "true"} "CORREDOR"]
+          [:th {:data-field "salida"
+                :data-sortable "true"} "SALIDA"]
+          [:th {:data-field "llegada"
+                :data-sortable "true"} "LLEGADA"]
+          [:th {:data-field "tiempo"
+                :data-sortable "true"} "TIEMPO"]]]
+        [:tbody
+         (for [row rows]
+           [:tr
+            [:td (:numero_asignado row)]
+            [:td (:corredor row)]
+            [:td (:salida row)]
+            [:td (:llegada row)]
+            [:td (:tiempo row)]])]]]]]))
+
 
 (defn llegadas-js [carrera_id]
   [:script
    "
-   function procesar_l() {
+    function updateClock() {
+     $.get('/time', function(data) {
+       $('#clock').text(data);
+     });
+    }
+    
+    setInterval(updateClock, 1000);
+
+   function procesar_llegadas() {
     let numero = $('#numero').val();
     $.ajax({
       method: 'GET',
@@ -312,7 +414,7 @@
         if(json.error) {
           alert(json.error);
         } else {
-          alert(json.success);
+          location.reload();
         }
       }
     });

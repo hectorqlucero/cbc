@@ -1,6 +1,6 @@
 (ns sk.handlers.creloj.model
   (:require [sk.models.crud :refer [Query Query! Update db]]
-            [sk.models.util :refer [current_time_internal]]))
+            [sk.models.util :refer [seconds->duration]]))
 
 (defn get-active-carrera []
   (:id (first (Query db "select id from carrera where activa='S'"))))
@@ -20,7 +20,9 @@
    llegada,
    ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
    from carreras 
-   where NULLIF(numero_asignado,' ') IS NOT NULL AND carrera_id = ?
+   where NULLIF(numero_asignado,' ') IS NOT NULL 
+   and NULLIF(numero_asignado,'0') IS NOT NULL
+   AND carrera_id = ?
    order by
    categoria_id,
    tiempo,
@@ -95,6 +97,9 @@
 
 (defn limpiar [carrera-id]
   (Query! db [limpiar-sql carrera-id]))
+
+(defn limpiar-numero-asignado [carrera-id]
+  (Query! db ["UPDATE carreras SET numero_asignado = NULL WHERE carrera_id = ?" carrera-id]))
 ;; End limpiar
 
 ;; Start get-carreras-row
@@ -151,14 +156,25 @@
    "select
     numero_asignado,
     concat(ifnull(nombre,''),' ',ifnull(apell_paterno,''),' ',ifnull(apell_materno,'')) as corredor,
-    TIME_FORMAT(salida,'%h:%i:%s %p') as salida
+    TIME_FORMAT(salida,'%h:%i:%s %p') as salida,
+    TIME_FORMAT(llegada,'%h:%i:%s %p') as llegada,
+    ABS(TIMESTAMPDIFF(SECOND,llegada,salida)) as tiempo
     from carreras
     where carrera_id = ?
+    and salida is not null
+    and salida != '00:00:00'
+    and numero_asignado is not null
+    and numero_asignado != ''
+    and numero_asignado != ' '
+    and numero_asignado != '0'
     order by CAST(numero_asignado AS UNSIGNED), numero_asignado
     "))
 
 (defn get-carreras-by-id [carrera-id]
-  (Query db [get-carreras-by-id-sql carrera-id]))
+  (let [rows (Query db [get-carreras-by-id-sql carrera-id])]
+    (map (fn [row]
+           (let [tiempo (:tiempo row)]
+             (assoc row :tiempo (seconds->duration tiempo)))) rows)))
 
 (comment
   (get-carreras-by-id 14)
