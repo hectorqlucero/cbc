@@ -22,6 +22,13 @@
 
 (def external-time-parser (f/formatter tz "hh:mm:ss a" "H:k:s"))
 
+(defn image-link
+  [image-name]
+  (let [path (str (:path config) image-name "?" (random-uuid))
+        style "margin-right:wpx;cursor:pointer;"
+        img-link (str "<img src='" path "' alt='" image-name "' width=42 height=32 style='" style "'>")]
+    img-link))
+
 (defn get-base-url [request]
   (str (subs (str (:scheme request)) 1) "://" (:server-name request) ":" (:server-port request)))
 

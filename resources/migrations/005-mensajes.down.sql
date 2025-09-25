@@ -1,1 +1,1 @@
-drop table mensajes;
+drop table if exists mensajes;

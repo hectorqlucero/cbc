@@ -1,5 +1,6 @@
 (ns sk.routes.proutes
   (:require
+   [sk.handlers.admin.certificado.controller :as certificado-controller]
    [compojure.core :refer [defroutes GET POST]]
    [sk.handlers.admin.users.controller :as users-controller]
    [sk.handlers.admin.eventos.controller :as eventos-controller]
@@ -12,6 +13,11 @@
    [sk.handlers.carreras.controller :as carreras-dashboard]))
 
 (defroutes proutes
+  (GET "/admin/certificado" params [] (certificado-controller/certificado params))
+  (GET "/admin/certificado/edit/:id" [id] (certificado-controller/certificado-edit id))
+  (POST "/admin/certificado/save" params [] (certificado-controller/certificado-save params))
+  (GET "/admin/certificado/add" params [] (certificado-controller/certificado-add params))
+  (GET "/admin/certificado/delete/:id" [id] (certificado-controller/certificado-delete id))
   (GET "/admin/users" params [] (users-controller/users params))
   (GET "/admin/users/edit/:id" [id] (users-controller/users-edit id))
   (POST "/admin/users/save" params [] (users-controller/users-save params))

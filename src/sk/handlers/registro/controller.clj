@@ -32,8 +32,9 @@
   (let [title (get-active-carrera-name carrera-id)
         ok -1
         extra (get-session-id)
+        js nil
         content (registrar-view title carrera-id extra)]
-    (application title ok nil content)))
+    (application title ok js content)))
 
 ;; start registrar-save
 (defn email-body

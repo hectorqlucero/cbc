@@ -1,1 +1,1 @@
-drop table lector;
+drop table if exists lector;

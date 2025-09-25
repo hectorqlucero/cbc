@@ -1,12 +1,12 @@
 (ns sk.handlers.admin.carrera.view
   (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
-            [sk.models.form :refer [form build-hidden-field build-field build-select build-radio build-modal-buttons build-textarea]]
+            [sk.models.form :refer [form build-hidden-field build-field build-image-field build-image-field-script build-select build-radio build-modal-buttons build-textarea]]
             [sk.models.grid :refer [build-grid build-modal modal-script]]))
 
 (defn carrera-view
   [title rows]
-  (let [labels ["DESCRIPCION" "ACTIVA"]
-        db-fields [:descripcion :activa]
+  (let [labels ["DESCRIPCION" "ACTIVA" "IMAGEN"]
+        db-fields [:descripcion :activa :image]
         fields (zipmap db-fields labels)
         table-id "carrera_table"
         args {:new true :edit true :delete true}
@@ -19,6 +19,7 @@
    (build-hidden-field {:id "id"
                         :name "id"
                         :value (:id row)})
+   (build-image-field row)
    (build-field {:label "Descripción"
                  :type "text"
                  :id "descripcion"
@@ -103,4 +104,6 @@
 
 (defn carrera-modal-script
   []
-  (modal-script))
+  (list
+   (build-image-field-script)
+   (modal-script)))

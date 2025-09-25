@@ -1,1 +1,1 @@
-drop table categorias;
+drop table if exists categorias;

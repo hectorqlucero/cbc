@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE if not exists users (
   `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `lastname` varchar(50) DEFAULT NULL,
   `firstname` varchar(50) DEFAULT NULL,

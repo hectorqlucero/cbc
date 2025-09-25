@@ -1,4 +1,4 @@
-CREATE TABLE `lector` (
+CREATE TABLE if not exists `lector` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `numero` varchar(255) DEFAULT NULL,
   `rfid` varchar(255) DEFAULT NULL,

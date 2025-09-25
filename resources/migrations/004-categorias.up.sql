@@ -1,4 +1,4 @@
-CREATE TABLE `categorias` (
+CREATE TABLE if not exists `categorias` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(200) DEFAULT NULL,
   `carrera_id` int NOT NULL,

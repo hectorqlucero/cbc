@@ -1,4 +1,4 @@
-CREATE TABLE `carrera` (
+CREATE TABLE if not exists `carrera` (
   `id` int NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(200) DEFAULT NULL,
   `activa` char(1) DEFAULT NULL COMMENT 'S=si,N=No',

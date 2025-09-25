@@ -6,7 +6,7 @@
    [sk.handlers.registered.model
     :refer [create-barcode get-active-carrera-name get-carreras get-categoria
             get-corredores-categorias get-oregistered get-register-row
-            get-registered get-corredores-by-categoria]]
+            get-registered get-corredores-by-categoria get-certificado]]
    [sk.handlers.registro.model :refer [get-active-carreras]]
    [sk.models.form :refer [build-field build-form build-select
                            build-submit-button]]
@@ -303,11 +303,14 @@
 
 (defn build-cert-html [id row]
   (let [rider (:nombre row)
+        carrera_id (:carrera_id row)
+        cert-row  (get-certificado carrera_id)
+        imagen (:imagen cert-row)
         categoria (get-categoria (:categoria_id row))
         tiempo (seconds->duration (:tiempo row))]
     (html5
      [:div {:style "position: relative;text-align:center;color:white;"}
-      [:img {:src "http://localhost:3000/uploads/cert.jpg"
+      [:img {:src (str "http://localhost:3000/uploads/" imagen)
              :alt "cert"
              :style "width:100%"}]
       [:div {:style "color:black;font-weight:900;font-size:1.87em;position:absolute;top:50%;left:10%;"} rider]

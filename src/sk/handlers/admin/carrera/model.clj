@@ -1,5 +1,6 @@
 (ns sk.handlers.admin.carrera.model
   (:require [sk.models.crud :refer [Query db]]
+            [sk.models.util :refer [image-link]]
             [clojure.string :as st]))
 
 (def get-carrera-sql
@@ -11,7 +12,8 @@ FROM carrera
 
 (defn get-carrera
   []
-  (Query db get-carrera-sql))
+  (->> (Query db get-carrera-sql)
+       (map #(assoc % :image (image-link (:imagen %))))))
 
 (def get-carrera-id-sql
   (str

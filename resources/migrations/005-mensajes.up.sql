@@ -1,4 +1,4 @@
-CREATE TABLE `mensajes` (
+CREATE TABLE if not exists `mensajes` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `registrar_mensaje` text,
   `correo_mensaje` text,

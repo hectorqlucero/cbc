@@ -212,7 +212,13 @@
            (let [categoria (get-categoria (:categoria_id row))]
              (assoc row :categoria categoria))) rows)))
 
+(defn get-certificado
+  [carrera-id]
+  (->> (Query db ["select *  from certificado where carrera_id = ?" carrera-id])
+       (first)))
+
 (comment
+  (get-certificado 16)
   (get-corredores-by-categoria 14 69)
   (get-corredores-categorias (get-active-carrera-id))
   (tiempo-para-evento 83)

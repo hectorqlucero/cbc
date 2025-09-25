@@ -1,4 +1,4 @@
-CREATE TABLE pos_items (
+CREATE TABLE if not exists pos_items (
   OID int(11) not null auto_increment primary key,
   name varchar(200),
   item_number varchar(200),

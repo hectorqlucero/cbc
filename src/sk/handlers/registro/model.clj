@@ -1,5 +1,6 @@
 (ns sk.handlers.registro.model
-  (:require [sk.models.crud :refer [Query db]]))
+  (:require [sk.models.crud :refer [Query db]]
+            [sk.models.util :refer [image-link]]))
 
 (defn get-active-carreras []
   (let [sql "select * from carrera where activa = 'S'"
@@ -88,7 +89,24 @@
             :value ""} options)))
 ;; end categoria-options
 
+(defn carta-responsiva
+  [carrera-id]
+  (let [row (->> (Query db ["select * from carrera where id = ?" carrera-id])
+                 (first))
+        carta-responsiva (str (:p2 row) " " (:p3 row))]
+    carta-responsiva))
+
+(defn build-image-link
+  [carrera-id]
+  (let [imagen (->> (Query db ["select imagen from carrera where id = ?" carrera-id])
+                    (first)
+                    (:imagen))
+        image (image-link imagen)]
+    image))
+
 (comment
+  (build-image-link "16")
+  (carta-responsiva 16)
   (categoria-options 2)
   (get-active-carreras)
   (get-active-carrera-name 2)

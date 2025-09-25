@@ -1,1 +1,1 @@
-drop table carreras;
+drop table if exists carreras;

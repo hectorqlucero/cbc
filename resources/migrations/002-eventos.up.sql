@@ -1,4 +1,4 @@
-CREATE TABLE `eventos` (
+CREATE TABLE if not exists `eventos` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `titulo` varchar(200) DEFAULT NULL,
   `detalles` text,

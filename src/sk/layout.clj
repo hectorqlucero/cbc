@@ -13,6 +13,7 @@
      (list
       [:li [:a.dropdown-item {:href "/admin/eventos"} "Eventos"]]
       [:li [:a.dropdown-item {:href "/admin/carrera"} "Carrera Configurar"]]
+      [:li [:a.dropdown-item {:href "/admin/certificado"} "Certificado Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/limpiar/numeros"} "Limpiar Numeros"]]

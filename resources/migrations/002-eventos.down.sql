@@ -1,1 +1,1 @@
-drop table eventos;
+drop table if exists eventos;

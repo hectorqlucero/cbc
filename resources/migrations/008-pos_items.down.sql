@@ -1,1 +1,1 @@
-drop table pos_items;
+drop table if exists pos_items;

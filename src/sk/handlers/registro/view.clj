@@ -8,9 +8,13 @@
                                                 get-registered
                                                 get-register-row
                                                 get-active-carreras
-                                                categoria-options]]
+                                                carta-responsiva
+                                                categoria-options
+                                                build-image-link]]
+            [sk.models.util :refer [image-link]]
             [sk.models.form :refer [build-form
                                     build-hidden-field
+                                    build-image-field-script
                                     build-field
                                     build-select
                                     build-radio
@@ -46,6 +50,7 @@
    (build-hidden-field {:id "carrera_id"
                         :name "carrera_id"
                         :value (str carrera-id)})
+   (build-image-link carrera-id)
    (build-field {:label "Nombre"
                  :type "text"
                  :id "nombre"
@@ -79,7 +84,22 @@
                    :type "text"
                    :id "numero_asignado"
                    :name "numero_asignado"
-                   :prompt "Numero asignado aqui..."}))))
+                   :prompt "Numero asignado aqui..."}))
+   (build-field {:label "Lugar de Atención Medica en caso de accidente<br><span style='font-size: 0.7em;'>(IMSS, ISSSTECALI, SEGURO POPULAR, HOSPITAL GENERAL, ALMATER, OTRO)</span>"
+                 :type "text"
+                 :id "atencion_medica"
+                 :name "atencion_medica"
+                 :prompt "IMSS, ISSSTECALI etc..."})
+   [:a {:href "#"
+        :title (carta-responsiva carrera-id)
+        :data-bs-toggle "tooltip"} "Carta Responsiva"]
+   [:div.form-check
+    [:input.form-check-input {:type "checkbox"
+                              :id "responsiva"
+                              :name "responsiva"
+                              :value "1"}]
+    [:label.form-check-label {:for "responsiva"}
+     "Que he léido y estoy conforme con los términos expuestos en lineas precedentes, por lo que firmo la presente responsiva por mi propia voluntad."]]))
 
 (defn registrar-view
   [title carrera-id extra]
@@ -88,6 +108,7 @@
         fields (registrar-fields carrera-id extra)
         buttons (build-submit-button {:label "Registrar"})]
     (build-form title href fields buttons)))
+
 ;; End registrar view
 
 ; ;; Start registrar view

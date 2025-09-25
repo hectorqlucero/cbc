@@ -1,4 +1,4 @@
-CREATE TABLE `carreras` (
+CREATE TABLE if not exists `carreras` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) DEFAULT NULL,
   `apell_paterno` varchar(100) DEFAULT NULL,
