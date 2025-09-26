@@ -5,6 +5,7 @@
                                      gen-pdf]]
             [sk.handlers.registered.model :refer [create-barcode]]
             [sk.handlers.registro.model :refer [get-active-carrera-name
+                                                get-carrera-fecha
                                                 get-registered
                                                 get-register-row
                                                 get-active-carreras
@@ -25,6 +26,7 @@
   (let [href (str "/registrar/" (:id row))]
     [:tr
      [:td (:descripcion row)]
+     [:td (get-carrera-fecha (:id row))]
      [:td [:a.btn.btn-primary {:role "button"
                                :href href
                                :target "_blank"} "Registrarse"]]]))
@@ -36,6 +38,7 @@
     [:thead.table-info
      [:tr
       [:th {:field "descripcion" :width "50"} "Carrera/Paseo"]
+      [:th {:field "fecha" :width "50"} "Fecha"]
       [:th {:width "50"} "Procesar"]]]
     [:tbody
      (map build-body (get-active-carreras))]]))
@@ -99,7 +102,7 @@
                               :name "responsiva"
                               :value "1"}]
     [:label.form-check-label {:for "responsiva"}
-     "Que he léido y estoy conforme con los términos expuestos en lineas precedentes, por lo que firmo la presente responsiva por mi propia voluntad."]]))
+     "Acepto que he léido el texto de la carta responsiva y estoy conforme con los términos expuestos en lineas precedentes, por lo que firmo la presente responsiva por mi propia voluntad."]]))
 
 (defn registrar-view
   [title carrera-id extra]

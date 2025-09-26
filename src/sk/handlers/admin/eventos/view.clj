@@ -1,5 +1,6 @@
 (ns sk.handlers.admin.eventos.view
   (:require [ring.util.anti-forgery :refer [anti-forgery-field]]
+            [sk.models.util :refer [get-options]]
             [sk.models.form :refer [form
                                     build-hidden-field
                                     build-image-field
@@ -28,6 +29,13 @@
    (build-hidden-field {:id "id"
                         :name "id"
                         :value (:id row)})
+   (build-select {:label "Carrera"
+                  :id "carrera_id"
+                  :name "carrera_id"
+                  :value (:carrera_id row)
+                  :required true
+                  :error "La carrera es requerida..."
+                  :options (get-options "carrera" "id"  "descripcion")})
    (build-field {:label "TITULO"
                  :type "text"
                  :id "titulo"

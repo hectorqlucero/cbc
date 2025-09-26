@@ -104,7 +104,14 @@
         image (image-link imagen)]
     image))
 
+(defn get-carrera-fecha
+  [carrera-id]
+  (->> (Query db ["select fecha from eventos where carrera_id = ? " carrera-id])
+       (first)
+       (:fecha)))
+
 (comment
+  (get-carrera-fecha 16)
   (build-image-link "16")
   (carta-responsiva 16)
   (categoria-options 2)
