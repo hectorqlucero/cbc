@@ -47,7 +47,9 @@
 (defn build-body [row]
   (let [href (str "/display/creloj/" (:id row))
         sref (str "/display/salidas/" (:id row))
-        lref (str "/display/llegadas/" (:id row))]
+        lref (str "/display/llegadas/" (:id row))
+        sa-ref (str "/auto/salidas/" (:id row))
+        la-ref (str "/auto/llegadas/" (:id row))]
     [:tr
      [:td (:descripcion row)]
      [:td [:a.btn.btn-primary {:role "button"
@@ -55,7 +57,11 @@
      [:td [:a.btn.btn-primary {:role "button"
                                :href sref} "Salidas"]]
      [:td [:a.btn.btn-primary {:role "button"
-                               :href lref} "Llegadas"]]]))
+                               :href lref} "Llegadas"]]
+     [:td [:a.btn.btn-primary {:role "button"
+                               :href sa-ref} "Salidas Auto"]]
+     [:td [:a.btn.btn-primary {:role "button"
+                               :href la-ref} "Llegadas Auto"]]]))
 (defn registrados-view []
   (list
    [:table.table.table-secondary.table-hover {:style "width:100%;height:auto;"}
@@ -65,7 +71,9 @@
       [:th {:field "descripcion" :width "50"} "Carrera/Paseo"]
       [:th {:width "20"} "Procesar"]
       [:th {:width "20"} "Procesar"]
-      [:th {:width "20"} "Procesar"]]]
+      [:th {:width "20"} "Procesar"]
+      [:th {:width "20"} "Procesar Auto"]
+      [:th {:width "20"} "Procesar Auto"]]]
     [:tbody
      (map build-body (get-active-carreras))]]))
 ;; End registrados-view
@@ -214,6 +222,61 @@
 
 ;; End limpiar
 
+;; Start salida general
+(defn corredores-salidas-view [title]
+  (build-form
+   title
+   ""
+   (list
+    (build-select
+     {:label "Carrera"
+      :id "id"
+      :name "id"
+      :value ""
+      :options (carreras-options)})
+    (list
+     [:div.form-group
+      [:label.font-weight-bold {:for "hora"} "Hora Salida General"]
+      [:input.mandatory.form-control {:label "Hora Salida"
+                                      :type "time"
+                                      :id "hora"
+                                      :name "hora"}]]))
+
+   [:button.bnt.btn-primary {:id "submit"
+                             :onclick "submitForm()"} "Hora Salida General"]))
+
+(defn corredores-salidas-script []
+  [:script
+   "
+    function submitForm() {
+        $('.fm').form('submit', {
+            onSubmit:function() {
+                if($(this).form('validate')) {
+                  $('#submit').prop('disabled',true);
+                  $('#submit').html('Procesando!');
+                }
+                return $(this).form('enableValidation').form('validate');
+            },
+            success: function(data) {
+                try {
+                    var dta = JSON.parse(data);
+                    if(dta.hasOwnProperty('url')) {
+                        alert(dta.url);
+                        window.location.href = dta.url;
+                    } else if(dta.hasOwnProperty('error')) {
+                        alert(dta.error);
+                        $('#submit').prop('disabled',true);
+                        $('#submit').html('Limpiar');
+                    }
+                } catch(e) {
+                    console.error('Invalid JSON');
+                }
+            }
+        });
+    }
+   "])
+;; End salida general
+
 ;; Start creloj-scripts
 (defn creloj-js [carrera_id]
   [:script
@@ -335,6 +398,7 @@
    }
 
    $(document).ready(function() {
+    $('#numero').focus();
     setInterval(runningTime, 1000);
    });
 
@@ -398,7 +462,6 @@
             [:td (:llegada row)]
             [:td (:tiempo row)]])]]]]]))
 
-
 (defn llegadas-js [carrera_id]
   [:script
    "
@@ -428,6 +491,7 @@
    }
 
    $(document).ready(function() {
+    $('#numero').focus();
     setInterval(runningTime, 1000);
    });
 
@@ -441,6 +505,172 @@
    }
    "])
 ;; End llegadas
+
+;; Start salidas-auto
+(defn salidas-auto-view [carrera_id]
+  (let [rows (get-carreras-by-id carrera_id)]
+    [:div.container
+     [:div.row
+      [:div.col-md-3
+       [:h1 "SALIDAS"]
+       [:div#runningTime]
+       [:h2#clock "Loading..."]
+       [:hr]
+
+       [:input#rfid {:type "text" :placeholder "rfid aqui" :onchange "procesar(this.value)"}]]
+      [:div.col-md-8.table-responsive
+       [:h2 "Corredores"]
+       [:table.table.table-sm {:id "salidas-table"
+                               :data-show-export "true"
+                               :data-locale "es-MX"
+                               :data-toggle "table"
+                               :data-show-columns "true"
+                               :data-show-toggle "true"
+                               :data-show-print "true"
+                               :data-search "true"
+                               :data-pagination "false"
+                               :data-key-events "true"}
+        [:thead.table-light
+         [:tr
+          [:th {:data-field "numero_asignado"
+                :data-sortable "true"} "#NUM"]
+          [:th {:data-field "corredor"
+                :data-sortable "true"} "CORREDOR"]
+          [:th {:data-field "categoria"
+                :data-sortable "true"} "CATEGORIA"]
+          [:th {:data-field "salida"
+                :data-sortable "true"} "SALIDA"]]]
+        [:tbody
+         (for [row rows]
+           [:tr
+            [:td (:numero_asignado row)]
+            [:td (:corredor row)]
+            [:td (:categoria row)]
+            [:td (:salida row)]])]]]]]))
+
+(defn salidas-auto-js [carrera_id]
+  [:script
+   "
+    function updateClock() {
+     $.get('/time', function(data) {
+       $('#clock').text(data);
+     });
+    }
+    
+    setInterval(updateClock, 1000);
+
+   function procesar(rfid) {
+    $.ajax({
+      method: 'GET',
+      url: '/procesar/auto/salidas/" carrera_id "/'+rfid,
+      success: function(result) {
+        location.reload();
+      }
+    });
+    $('#rfid').val('');
+   }
+
+   $(document).ready(function() {
+    $('#rfid').focus();
+    setInterval(runningTime, 1000);
+   });
+
+   function runningTime() {
+    $.ajax({
+      url: '/table_ref/get-current-time',
+      success: function(data) {
+        $('#runningTime').html(data);
+      },
+    });
+   }
+   "])
+;; End salidas
+
+;; Start llegadas
+(defn llegadas-auto-view [carrera_id]
+  (let [rows (get-carreras-by-id carrera_id)]
+    [:div.container
+     [:div.row
+      [:div.col-md-3
+       [:h1 "LLEGADAS"]
+       [:div#runningTime]
+       [:h2#clock "Loading..."]
+       [:hr]
+       [:input#rfid {:type "text" :placeholder "rfid aqui" :onchange "procesar_llegadas(this.value)"}]]
+      [:div.col-md-8.table-responsive
+       [:h2 "Corredores"]
+       [:table.table.table-sm {:id "llegadas-table"
+                               :data-show-export "true"
+                               :data-locale "es-MX"
+                               :data-toggle "table"
+                               :data-show-columns "true"
+                               :data-show-toggle "true"
+                               :data-show-print "true"
+                               :data-search "true"
+                               :data-pagination "false"
+                               :data-key-events "true"}
+        [:thead.table-light
+         [:tr
+          [:th {:data-field "numero_asignado"
+                :data-sortable "true"} "#NUM"]
+          [:th {:data-field "corredor"
+                :data-sortable "true"} "CORREDOR"]
+          [:th {:data-field "categoria"
+                :data-sortable "true"} "CATEGORIA"]
+          [:th {:data-field "salida"
+                :data-sortable "true"} "SALIDA"]
+          [:th {:data-field "llegada"
+                :data-sortable "true"} "LLEGADA"]
+          [:th {:data-field "tiempo"
+                :data-sortable "true"} "TIEMPO"]]]
+        [:tbody
+         (for [row rows]
+           [:tr
+            [:td (:numero_asignado row)]
+            [:td (:corredor row)]
+            [:td (:categoria row)]
+            [:td (:salida row)]
+            [:td (:llegada row)]
+            [:td (:tiempo row)]])]]]]]))
+
+(defn llegadas-auto-js [carrera_id]
+  [:script
+   "
+
+    function updateClock() {
+     $.get('/time', function(data) {
+       $('#clock').text(data);
+     });
+    }
+    
+    setInterval(updateClock, 1000);
+
+   function procesar_llegadas(rfid) {
+    $.ajax({
+      method: 'GET',
+      url: '/procesar/auto/llegadas/" carrera_id "/'+rfid,
+      success: function(result) {
+        location.reload();
+      }
+    });
+    $('#rfid').val('');
+   }
+
+   $(document).ready(function() {
+    $('#rfid').focus();
+    setInterval(runningTime, 1000);
+   });
+
+   function runningTime() {
+    $.ajax({
+      url: '/table_ref/get-current-time',
+      success: function(data) {
+        $('#runningTime').html(data);
+      },
+    });
+   }
+   "])
+;; End llegadas-auto
 
 (comment
   (current-time)

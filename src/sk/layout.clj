@@ -16,9 +16,11 @@
       [:li [:a.dropdown-item {:href "/admin/certificado"} "Certificado Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/categorias"} "Categorias Configurar"]]
       [:li [:a.dropdown-item {:href "/admin/mensajes"} "Mensajes Configurar"]]
-      [:li [:a.dropdown-item {:href "/admin/limpiar/numeros"} "Limpiar Numeros"]]
-      [:li [:a.dropdown-item {:href "/admin/limpiar"} "Limpiar Contrareloj"]]
-      [:li [:a.dropdown-item {:href "/procesar/lector"} "Procesar Lector->carreras"]]
+      [:li.confirm [:a.dropdown-item {:href "/truncar/rfid"} "Truncar rfid"]
+       [:li [:a.dropdown-item {:href "/admin/rfid"} "Asignar rfid->numeros"]]
+       [:li [:a.dropdown-item {:href "/admin/salida/general"} "Salida General"]]
+       [:li [:a.dropdown-item {:href "/admin/limpiar/numeros"} "Limpiar Numeros"]]
+       [:li [:a.dropdown-item {:href "/admin/limpiar"} "Limpiar Contrareloj"]]]
       (when (= (user-level) "S")
         [:li [:a.dropdown-item {:href "/admin/users"} "Usuarios"]])))))
 

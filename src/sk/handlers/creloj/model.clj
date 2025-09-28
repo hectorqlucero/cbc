@@ -1,6 +1,10 @@
 (ns sk.handlers.creloj.model
   (:require [sk.models.crud :refer [Query Query! Update db]]
-            [sk.models.util :refer [seconds->duration]]))
+            [sk.models.util :refer [seconds->duration current_time_internal]]))
+
+(defn actualizar-salida-general
+  [hora carrera-id]
+  (Update db :carreras {:salida hora} ["carrera_id = ?" carrera-id]))
 
 (defn get-active-carrera []
   (:id (first (Query db "select id from carrera where activa='S'"))))
@@ -102,6 +106,12 @@
   (Query! db ["UPDATE carreras SET numero_asignado = NULL WHERE carrera_id = ?" carrera-id]))
 ;; End limpiar
 
+;; Start limpiar rfid
+(defn limpiar-rfid
+  []
+  (Query! db "TRUNCATE TABLE rfid"))
+;; End limpiar rfid
+
 ;; Start get-carreras-row
 (def get-carreras-row-sql
   "
@@ -109,40 +119,39 @@
   FROM carreras
   WHERE carrera_id = ? and numero_asignado = ?
   ")
+
 (defn get-carreras-row [carrera_id numero_asignado]
   (let [row (first (Query db [get-carreras-row-sql carrera_id numero_asignado]))]
     row))
 ;; End get-carreras-row
 
-;; Start lector
-(def lector-sql
-  "
-  select
-  pos_items.OID as lector_id,
-  pos_items.checkin_dt as lector_salida,
-  pos_items.checkout_dt as lector_llegada,
-  carreras.id as carreras_id
-  from pos_items
-  join carreras on carreras.numero_asignado = pos_items.name
-  ")
+;; Start corredores-salidas
+(defn corredores-salidas
+  [carrera_id rfid]
+  (let [numero_asignado (->> (Query db ["select numero from rfid where rfid = ?" rfid])
+                             (first)
+                             (:numero))
+        carrera-id (->> (Query db ["select id from carreras where COALESCE(NULLIF(salida,''),'') = '' and numero_asignado = ? and carrera_id = ?" numero_asignado carrera_id])
+                        (first)
+                        (:id))
+        row {:salida (current_time_internal)}]
+    (when (integer? carrera-id)
+      (Update db :carreras row ["id = ?" carrera-id]))))
+;; End corredores-salidas
 
-(defn process-carreras
-  "postear salida y llegada de la table lector a la table carreras"
-  [row]
-  (let [carreras-id (:carreras_id row)
-        prow {:salida (:lector_salida row)
-              :llegada (:lector_llegada row)}
-        result (Update db :carreras prow ["id = ?" carreras-id])]
-    result))
-
-(defn process-lector
-  [rows]
-  (map process-carreras rows))
-
-(defn get-lector
-  []
-  (Query db lector-sql))
-;; End lector
+;; Start corredores-llegadas
+(defn corredores-llegadas
+  [carrera_id rfid]
+  (let [numero_asignado (->> (Query db ["select numero from rfid where rfid = ?" rfid])
+                             (first)
+                             (:numero))
+        carrera-id (->> (Query db ["select id from carreras where COALESCE(NULLIF(llegada,''),'') = '' and numero_asignado = ? and carrera_id = ?" numero_asignado carrera_id])
+                        (first)
+                        (:id))
+        row {:llegada (current_time_internal)}]
+    (when (integer? carrera-id)
+      (Update db :carreras row ["id = ?" carrera-id]))))
+;; End corredores-llegadas
 
 (defn carreras-options
   []
@@ -179,7 +188,8 @@
              (assoc row :tiempo (seconds->duration tiempo)))) rows)))
 
 (comment
-  (get-carreras-by-id 14)
+  (get-carreras-auto-row 16 "E2806894000040170C2224A4")
+  (get-carreras-by-id 16)
   (carreras-options)
   (process-lector (get-lector))
   (get-lector)

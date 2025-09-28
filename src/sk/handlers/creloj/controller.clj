@@ -2,8 +2,11 @@
   (:require [clojure.data.csv :as csv]
             [clojure.java.io :as io]
             [clojure.string :as st]
+            [ring.util.response :as response]
             [sk.handlers.creloj.view
              :refer [registrados-view
+                     corredores-salidas-view
+                     corredores-salidas-script
                      creloj-view creloj-js
                      seconds->duration
                      limpiar-view
@@ -12,15 +15,21 @@
                      limpiar-numeros-script
                      salidas-view
                      salidas-js
+                     salidas-auto-view
+                     salidas-auto-js
                      llegadas-view
                      llegadas-js
+                     llegadas-auto-view
+                     llegadas-auto-js
                      current-time]]
             [sk.handlers.creloj.model :refer [get-oregistered
+                                              actualizar-salida-general
                                               limpiar
+                                              limpiar-rfid
                                               limpiar-numero-asignado
-                                              get-carreras-row
-                                              get-lector
-                                              process-lector]]
+                                              corredores-salidas
+                                              corredores-llegadas
+                                              get-carreras-row]]
             [sk.models.crud :refer [Update db]]
             [sk.models.util :refer [get-session-id
                                     current_time_internal
@@ -28,6 +37,21 @@
             [cheshire.core :refer [generate-string]]
             [sk.layout
              :refer [application error-404]]))
+
+(defn salidas-general
+  [_]
+  (let [title "Salida general de corredores"
+        ok (get-session-id)
+        js (corredores-salidas-script)
+        content (corredores-salidas-view title)]
+    (application title ok js content)))
+
+(defn salidas-general-save
+  [{params :params}]
+  (let [hora (:hora params)
+        carrera-id (:id params)
+        result (actualizar-salida-general hora carrera-id)]
+    (response/redirect "/admin/salida/general")))
 
 (defn get-time []
   (current-time))
@@ -50,6 +74,20 @@
         ok (get-session-id)
         js (llegadas-js carrera_id)
         content (llegadas-view carrera_id)]
+    (application title ok js content)))
+
+(defn salidas-auto [rfid]
+  (let [title "SALIDAS DE CORREDORES"
+        ok (get-session-id)
+        js (salidas-auto-js rfid)
+        content (salidas-auto-view rfid)]
+    (application title ok js content)))
+
+(defn llegadas-auto [rfid]
+  (let [title "LLEGADAS DE CORREDORES"
+        ok (get-session-id)
+        js (llegadas-auto-js rfid)
+        content (llegadas-auto-view rfid)]
     (application title ok js content)))
 
 (defn contra-reloj [carrera_id]
@@ -144,13 +182,6 @@
       (error-404 "Numeros limpiados!" "/")
       (error-404 "Incapaz de nulificar campos!" "/"))))
 
-(defn limpiar-numeros [{params :params}]
-  (let [carrera-id (:id params)
-        result (limpiar-numero-asignado carrera-id)]
-    (if result
-      (error-404 "Numeros limpiados!" "/")
-      (error-404 "Incapaz de nulificar campos!" "/"))))
-
 (defn procesar-salidas [carrera_id numero_asignado]
   (let [row (get-carreras-row carrera_id numero_asignado)
         id (:id row)
@@ -169,9 +200,21 @@
       (generate-string {:success "Procesado correctamente!"})
       (generate-string {:error "No se pudo procesar, o numero asignado incorrecto!"}))))
 
-(defn lector-carreras
+(defn procesar-auto-salidas [carrera_id rfid]
+  (let [result (corredores-salidas carrera_id rfid)]
+    (if (> (first (seq result)) 0)
+      (generate-string {:success "Procesado correctamente!"})
+      (generate-string {:error "No se pudo procesar, o numero asignado incorrecto!"}))))
+
+(defn procesar-auto-llegadas [carrera_id rfid]
+  (let [result (corredores-llegadas carrera_id rfid)]
+    (if (> (first (seq result)) 0)
+      (generate-string {:success "Procesado correctamente!"})
+      (generate-string {:error "No se pudo procesar, o numero asignado incorrecto!"}))))
+
+(defn truncar-rfid
   [_]
-  (let [result (doall (process-lector (get-lector)))]
+  (let [result (limpiar-rfid)]
     (if (seq result)
       (error-404 "Procesado con exito!" "/display/creloj")
       (error-404 "No se pudo procesar!" "/display/creloj"))))

@@ -1,5 +1,6 @@
 (ns sk.routes.proutes
   (:require
+   [sk.handlers.admin.rfid.controller :as rfid-controller]
    [sk.handlers.admin.certificado.controller :as certificado-controller]
    [compojure.core :refer [defroutes GET POST]]
    [sk.handlers.admin.users.controller :as users-controller]
@@ -13,6 +14,11 @@
    [sk.handlers.carreras.controller :as carreras-dashboard]))
 
 (defroutes proutes
+  (GET "/admin/rfid" params [] (rfid-controller/rfid params))
+  (GET "/admin/rfid/edit/:id" [id] (rfid-controller/rfid-edit id))
+  (POST "/admin/rfid/save" params [] (rfid-controller/rfid-save params))
+  (GET "/admin/rfid/add" params [] (rfid-controller/rfid-add params))
+  (GET "/admin/rfid/delete/:id" [id] (rfid-controller/rfid-delete id))
   (GET "/admin/certificado" params [] (certificado-controller/certificado params))
   (GET "/admin/certificado/edit/:id" [id] (certificado-controller/certificado-edit id))
   (POST "/admin/certificado/save" params [] (certificado-controller/certificado-save params))
@@ -67,6 +73,8 @@
   (GET "/display/creloj/:carrera_id" [carrera_id] (creloj-controller/contra-reloj carrera_id))
   (GET "/display/salidas/:carrera_id" [carrera_id] (creloj-controller/salidas carrera_id))
   (GET "/display/llegadas/:carrera_id" [carrera_id] (creloj-controller/llegadas carrera_id))
+  (GET "/auto/salidas/:rfid" [rfid] (creloj-controller/salidas-auto rfid))
+  (GET "/auto/llegadas/:rfid" [rfid] (creloj-controller/llegadas-auto rfid))
   (GET "/update/salida/:id" [id] (creloj-controller/contra-reloj-salida id))
   (GET "/update/llegada/:id" [id] (creloj-controller/contra-reloj-llegada id))
   (GET "/change/salida/:id/:v" [id v] (creloj-controller/contra-reloj-salida-cambiar id v))
@@ -74,16 +82,20 @@
   (GET "/creloj/csv/:carrera_id" [carrera_id] (creloj-controller/generate-csv carrera_id))
   (GET "/procesar/salidas/:carrera_id/:numero" [carrera_id numero] (creloj-controller/procesar-salidas carrera_id numero))
   (GET "/procesar/llegadas/:carrera_id/:numero" [carrera_id numero] (creloj-controller/procesar-llegadas carrera_id numero))
+  (GET "/procesar/auto/salidas/:carrera_id/:rfid" [carrera_id rfid] (creloj-controller/procesar-auto-salidas carrera_id rfid))
+  (GET "/procesar/auto/llegadas/:carrera_id/:rfid" [carrera_id rfid] (creloj-controller/procesar-auto-llegadas carrera_id rfid))
   ;; End creloj
 
   ;; Start limpiar
+  (GET "/admin/salida/general" req [] (creloj-controller/salidas-general req))
+  (POST "/admin/salida/general" req [] (creloj-controller/salidas-general-save req))
   (GET "/admin/limpiar" req [] (creloj-controller/limpiar-form req))
   (POST "/admin/limpiar" req [] (creloj-controller/limpiar-tiempos req))
   (GET "/admin/limpiar/numeros" req [] (creloj-controller/limpiar-numeros-form req))
   (POST "/admin/limpiar/numeros" req [] (creloj-controller/limpiar-numeros req))
   ;; End limpiar
 
-  ;; Start lector
-  (GET "/procesar/lector" req [] (creloj-controller/lector-carreras req))
-  ;; End lector
+  ;; Start rfid
+  (GET "/truncar/rfid" req [] (creloj-controller/truncar-rfid req))
+  ;; End rfid
   )
