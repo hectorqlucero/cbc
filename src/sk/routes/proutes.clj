@@ -65,6 +65,7 @@
   (GET "/imprimir/registered/:id" [id] (registered-controller/imprimir id))
   (GET "/cert/registered/:id" [id] (registered-controller/cert id))
   (GET "/update/registered/:id/:no" [id no] (registered-controller/update-db id no))
+  (GET "/delete/carrera/:active-id/:id" [active-id id] (registered-controller/delete-carrera active-id id))
   ;; End display registered
 
   ;; Start creloj

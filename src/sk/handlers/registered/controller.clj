@@ -12,7 +12,8 @@
                      imprimir-cert-view
                      update-number-script]]
             [sk.handlers.registered.model :refer [get-active-carrera-id
-                                                  get-corredor-by-numero]]
+                                                  get-corredor-by-numero
+                                                  delete-carreras]]
             [noir.response :refer [redirect]]
             [sk.layout :refer [application error-404]]
             [cheshire.core :refer [generate-string]]
@@ -92,6 +93,11 @@
         row (get-corredor-by-numero (get-active-carrera-id) numero_asignado)
         carreras-id (:id row)]
     (cert carreras-id)))
+
+(defn delete-carrera
+  [active-id id]
+  (delete-carreras id)
+  (error-404 "Se borro el record!" (str "/display/registered/" active-id)))
 
 (comment
   (get-corredor-by-numero (get-active-carrera-id) 704)

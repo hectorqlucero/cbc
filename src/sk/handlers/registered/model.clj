@@ -1,11 +1,15 @@
 (ns sk.handlers.registered.model
-  (:require [sk.models.crud :refer [Query db]]
+  (:require [sk.models.crud :refer [Query Delete db]]
             [sk.migrations :refer [config]]
             [clojure.java.io :as io]
             [clj.qrgen :refer [as-file from]]
             [sk.models.util :refer [seconds->duration]])
   (:import java.text.SimpleDateFormat
            [java.util Calendar UUID]))
+
+(defn delete-carreras
+  [carrera-id]
+  (Delete db :carreras ["id = ?" carrera-id]))
 
 (defn get-active-carrera []
   (:id (first (Query db "select id from carrera where activa='S'"))))
@@ -27,6 +31,7 @@
   "
    select
    id,
+   carrera_id,
    nombre,
    apell_paterno,
    apell_materno,
@@ -79,6 +84,7 @@
   "
    select
    carreras.id,
+   carreras.carrera_id,
    TIMESTAMPDIFF(SECOND,carreras.salida,carreras.llegada) as tiempo,
    carreras.nombre,
    carreras.apell_paterno,
@@ -179,6 +185,7 @@
   "
    select
    id,
+   carrera_id,
    nombre,
    apell_paterno,
    apell_materno,

@@ -64,6 +64,7 @@
   (let [button-path (str "'" "/imprimir/registered/" (:id row) "'")
         comando (str "location.href = " button-path)
         cert-path (str "/cert/registered/" (:id row))
+        borrar-path (str "/delete/carrera/" (:carrera_id row) "/" (:id row))
         cert-comando (str "location.href = " cert-path)]
     [:tr
      [:td (swap! cnt inc)]
@@ -83,7 +84,9 @@
                                             :target "_blank"} "Registro"]]
      [:td [:a.btn.btn-outline-primary {:role "button"
                                        :href cert-path
-                                       :target "_blank"} "Certificado"]]]))
+                                       :target "_blank"} "Certificado"]]
+     [:td [:a.btn.btn-outline-danger {:role "button"
+                                      :href borrar-path} "Del"]]]))
 
 (defn build-categorias
   [carrera_id]
@@ -112,7 +115,8 @@
         [:th "Categoria"]
         [:th "No Asignado"]
         [:th "Imprimir"]
-        [:th "Cert"]]]
+        [:th "Cert"]
+        [:th "Borrar"]]]
       [:tbody (map my-body rows)]]]))
 
 (defn registered-filter-view [carrera_id categoria_id]
@@ -135,7 +139,8 @@
         [:th "Categoria"]
         [:th "No Asignado"]
         [:th "Imprimir"]
-        [:th "Cert"]]]
+        [:th "Cert"]
+        [:th "Borrar"]]]
       [:tbody (map my-body rows)]]]))
 ;; End registered-view
 
@@ -299,7 +304,18 @@
          $.get('/update/registered/'+id+'/'+no, function(data) {
            var mensaje = JSON.parse(data);
          })
-   }")])
+   }")
+   (str
+    "
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('scrollY', window.scrollY);
+    });
+
+  window.addEventListener('load', () => {
+    const y = localStorage.getItem('scrollY');
+    if (y !== null) window.scrollTo(0, parseInt(y));
+  });
+     ")])
 
 (defn build-cert-html [id row]
   (let [rider (:nombre row)
