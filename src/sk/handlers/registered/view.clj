@@ -103,7 +103,7 @@
       [:h2 "CORREDORES REGISTRADOS"]
       [:h3 (get-active-carrera-name carrera_id)]
       [:h3 (build-categorias carrera_id)]]
-     [:table.table.table-striped.table-hover.table-bordered
+     [:table.table.table-striped.table-hover.table-bordered.table-sm.w-100
       [:thead.table-primary
        [:tr]
        [:tr
@@ -127,7 +127,7 @@
       [:h2 "CORREDORES REGISTRADOS"]
       [:h3 (get-active-carrera-name carrera_id)]
       [:h3 (build-categorias carrera_id)]]
-     [:table.table.table-striped.table-hover.table-bordered
+     [:table.table.table-striped.table-hover.table-bordered.table-sm.w-100
       [:thead.table-primary
        [:tr]
        [:tr
