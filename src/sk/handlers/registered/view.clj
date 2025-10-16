@@ -98,7 +98,7 @@
 (defn registered-view [carrera_id]
   (let [rows (get-oregistered carrera_id)
         cnt (reset! cnt 0)]
-    [:div.container
+    [:div.container-fluid
      [:center
       [:h2 "CORREDORES REGISTRADOS"]
       [:h3 (get-active-carrera-name carrera_id)]
@@ -122,7 +122,7 @@
 (defn registered-filter-view [carrera_id categoria_id]
   (let [rows (get-corredores-by-categoria carrera_id categoria_id)
         cnt (reset! cnt 0)]
-    [:div.container
+    [:div.container-fluid
      [:center
       [:h2 "CORREDORES REGISTRADOS"]
       [:h3 (get-active-carrera-name carrera_id)]
